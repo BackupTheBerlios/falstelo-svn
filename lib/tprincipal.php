@@ -98,7 +98,7 @@ class Tprincipal
       $arrive = gettimeofday();
       print "<!--";
       $temps_total = ($arrive[usec] - $depart[usec]) / 1000 / 1000;
-      print "Page produite en ". $temps_total ." secondes";
+      print "Page produite en ". $temps_total ." secondes par php-falstelo.";
       print "-->\n";
     }
 }
