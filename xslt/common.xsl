@@ -120,7 +120,7 @@
 	    <xsl:if test="$Message != ''">
 	      <p class="message"><xsl:value-of select="$Message"/></p>
 	    </xsl:if>
-	    <xsl:apply-templates select="page/fichiers | pages/requetes"/>
+	    <xsl:apply-templates select="page/fichiers | page/requetes"/>
 	  </div>
 
 	  <div class="onglets ongletsbas">
