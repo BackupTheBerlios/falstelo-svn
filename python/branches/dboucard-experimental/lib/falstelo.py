@@ -1,16 +1,43 @@
 # -*- coding: UTF-8 -*-
 
-import os
-import sys
-import sre
-import libxml2
-import imp
-import new
 from mod_python import apache
-
+import os, sys, sre, imp
+import libxml2
+import traceback
 import configuration
 
-class TTransformation:
+# mod_python handler
+def handler(req):
+	rep = ''
+	fichier = req.filename
+	slash = req.filename.rfind('/')
+	if slash != -1:
+		fichier = req.filename[slash+1:-5]
+		rep = req.filename[:slash]
+	#return error(req,"rep="+rep+"\nfichier="+fichier)
+	try:
+		importation = imp.find_module(fichier, [rep,])
+ 		module = imp.load_module("dynamicpage", importation[0], importation[1], importation[2])
+	except:
+		t = Ttransformation(req)
+	else:
+		t = eval("module.T"+fichier+"(req)")
+
+	#return error(req,str(t))
+	t.proceder()
+	req.content_type = t.typeMime
+	req.write(t.resultat)
+	return t.codeRetour
+
+def error(req,message):
+	req.content_type = "text/html"
+	req.write("<html><body>")
+	req.write(message.replace("\n","<br/>"))
+	req.write("</body></html>")
+	return apache.OK
+
+
+class Ttransformation:
 	def __init__(self, req):
 		#f = open("/tmp/falstelo.log","w")
 
@@ -23,7 +50,9 @@ class TTransformation:
 		#f.write("URI="+req.uri+"\nUnparsed URI="+req.unparsed_uri+"\nFilename="+req.filename+"\nrepertoireTravail="+sre.match("(/.*/)", req.filename).group(0)+"\n")
 		#f.close()
 		self.repertoireTravail = sre.match("(/.*/)", req.filename).group(0)
-		
+
+		self.typeMime = "text/html"
+		self.codeRetour = apache.OK
 		self.fichiersXML = []
 		self.noeudsXML = []
 		self.requetesSQL = []
@@ -74,17 +103,17 @@ class TTransformation:
 		elif os.access(self.fichierDemande + ".py", os.R_OK) == True :
 			#sinon (le fichier XML n'existe pas), alors on tente un dernier essai avec un fichier py, que l'on importe...
 			self.resultat += "On a trouvé un fichier python... Ce travail reste à faire... : " + self.fichierDemande
-			fname = self.fichierDemande
-			slash = self.fichierDemande.rfind('/')
-			if slash != -1:
-				fname = self.fichierDemande[slash+1:]
-			importation = imp.find_module(fname, [self.repertoireTravail,])
-			module = imp.load_module("dynamicpage", importation[0], importation[1], importation[2])
-			classe = getattr(module, "T"+fname)
-			objet = new.instance(classe)
-			objet.__init__(self.requeteApache)
-			objet.proceder()
-			self.resultat += objet.resultat
+## 			fname = self.fichierDemande
+## 			slash = self.fichierDemande.rfind('/')
+## 			if slash != -1:
+## 				fname = self.fichierDemande[slash+1:]
+## 			importation = imp.find_module(fname, [self.repertoireTravail,])
+## 			module = imp.load_module("dynamicpage", importation[0], importation[1], importation[2])
+## 			classe = getattr(module, "T"+fname)
+## 			objet = new.instance(classe)
+## 			objet.__init__(self.requeteApache)
+## 			objet.proceder()
+## 			self.resultat += objet.resultat
 			self.typeMime = "text/plain"
 			self.codeRetour = apache.OK
 			return

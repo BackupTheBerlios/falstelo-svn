@@ -1,0 +1,4 @@
+AddHandler python-program .html
+PythonHandler lib.falstelo
+PythonDebug On
+PythonAutoReload On 
