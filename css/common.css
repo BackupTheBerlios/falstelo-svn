@@ -145,7 +145,7 @@ ul li
 
 div.top
 { 
-  position: fixed;
+  /*position: fixed;*/
   left: 0;
   top:0;
 }
