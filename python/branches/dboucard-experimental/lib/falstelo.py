@@ -215,7 +215,7 @@ class Ttransformation:
 							champ.setProp(u"type",coltype)
 		if len(self.noeudsXML) > 0:
 			pass
-		res = domDocument.saveFile("/tmp/flstXML.xml")
+		#res = domDocument.saveFile("/tmp/flstXML.xml")
 		return domDocument		
 
 	def __extraireNomFeuilleStyle(self, fichierXML):
