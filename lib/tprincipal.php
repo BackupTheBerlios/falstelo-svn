@@ -49,7 +49,7 @@ class Tprincipal
 	  // le fichier .php existe, on l'utilise alors (cas des pages dynamiques, avec accès à la bdd)
 	  require_once($page . ".php");
 	  $nom_classe = "T" . $page;
-	  $iTransformation = new ${nom_classe}();
+	  $iTransformation = new ${nom_classe}($page, $page_demandee);
 	}
       else
 	{
@@ -58,7 +58,7 @@ class Tprincipal
 	    {
 	      // ni fichier .php, ni fichier .xml. La page demandée n'existe donc pas.
 	      // Affichage de la page statique d'erreur à la place
-	      header ("HTTP/1.x 404 Not Found");
+	      header("HTTP/1.x 404 Not Found"); 
 	      $page = "404";
 	    }
 		
@@ -71,7 +71,7 @@ class Tprincipal
 	    require_once("lib/ttransformation.php");
 	    $nom_classe = "Ttransformation";
 	  }
-	  $iTransformation = new ${nom_classe}();
+	  $iTransformation = new ${nom_classe}($page, $page_demandee);
 
 	  // recherche le nom de la feuille de style
 	  $fichiers_xml = array($page.".xml");
@@ -92,8 +92,10 @@ class Tprincipal
 	}
 
       $iTransformation->voir_xml = $voir_xml;
+      /*
       $iTransformation->page_demandee = $page_demandee;
       $iTransformation->page = $page;
+      */
 		
       $resultat = $iTransformation->get(); //affichage de la page.
       header("Content-type: $iTransformation->type_mime");

@@ -18,12 +18,11 @@ else
 
 require_once("rs2xml/rs2xml.inc.php");
 
-class Ttransformation
-{
+class Ttransformation{
   var $cache_path = "cache/";
+  var $temps_cache = 0; //en secondes. Par défaut, pas de cache.
   var $xml_path = ""; //sera ajouté au début de chaque chemin XML
   var $xslt_path = ""; //idem pour les XSLT 
-  var $temps_cache = 0;
   var $voir_xml = false;
   var $page = ""; //page affichée
   var $page_demandee = ""; //page demandée, peut etre differente, par exemple page_demandee = "nonexist" et page = "404"
@@ -38,44 +37,55 @@ class Ttransformation
   
   var $USE_SABLOTRON = true;
 
-  function Ttransformation() //constructeur
+  function Ttransformation($page, $page_demandee) //constructeur
   {
-
+    $this->page = $page;
+    $this->page_demandee = $page_demandee;
   }
 
   function get()
   {
-    if ( $this->fichiers_xml == null)
-      {
-	return "Erreur : appel de TTransoformation:get() sans fichiers_xml attribué";
+    $fichier_cache = $this->cache_path . $this->page . ".html";
+    if (file_exists($fichier_cache) && (filemtime($fichier_cache) + $this->temps_cache > time()) && filemtime($fichier_cache) > filemtime($this->fichier_xslt)){ // on utilise la version qui vient du cache
+      return file_get_contents($fichier_cache);
+    }
+    else{ // on genere la page
+      
+      $html = $this->transformer();
+      
+      // si temps_cache > 0, alors on écrit le fichier dans le cache.
+      if ( $this->temps_cache > 0){
+	//on verifie d'abord si le repertoire d'accueil existe. Sinon on le cree.
+	if ( ! file_exists(dirname($fichier_cache)) ){
+	  mkdir(dirname($fichier_cache), umask(), true);
+	}
+	$fp = @fopen ($fichier_cache, "w");
+	if ($fp){
+	  fputs ($fp, $html . "<!--Fichier extrait du cache (" . date("r", time())   . ")-->\n");
+	  fclose ($fp);
+	}
       }
-    else
-      {
-	return $this->transformer();
-      }
+      return $html;
+    }
   }
 
   function transformer()
   {
-    if ( $this->fichier_xslt == "" || $this->fichier_xslt == null )
-      {
-	// si aucun fichier xslt n'est défini, on affiche le fichier xml tel quel.
-	$this->voir_xml = true;
-      }
-
-    if ($this->voir_xml == true)
-      {
-	$this->type_mime = "text/xml";
-      }
-
+    if ( $this->fichier_xslt == "" || $this->fichier_xslt == null ){
+      // si aucun fichier xslt n'est défini, on affiche le fichier xml tel quel.
+      $this->voir_xml = true;
+    }
+    
+    if ($this->voir_xml == true){
+      $this->type_mime = "text/xml";
+    }
+    
     foreach($this->fichiers_xml as $key => $fichier_xml) {
       $this->fichiers_xml[$key] = $this->xml_path . $fichier_xml;
     }
     $fichier_xslt = $this->xslt_path . $this->fichier_xslt;
     $html = "";
-
-    //$nodexml_session = $this->session_vers_xml();
-    //$nodexml_categories = $this->categories_vers_xml();
+    
     $nodexml_fichiers = $this->fichiers_vers_xml($this->fichiers_xml);
     $nodexml_sql = $this->sql_vers_xml($this->requetes_sql);
     array_push($this->array_nodexml, $nodexml_fichiers);
@@ -87,7 +97,7 @@ class Ttransformation
     else{
       $html = $domxml->dump_mem(true,"UTF-8");
     }
-    return $html;
+      return $html;
   }
 
   function sql_vers_xml($requetes)
