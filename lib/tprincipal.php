@@ -42,11 +42,11 @@ class Tprincipal
     {
       global $voir_xml;
       // Test d'existence du fichier correspondant à la page demand�
-      if ( file_exists("xml/".$page.".php") )
+      if ( file_exists("xml/". str_replace("_", "/", $page) .".php") )
 	{
 	  // le fichier .php existe, on l'utilise alors (cas des pages dynamiques, avec accès à la bdd)
-	  require("xml/".$page.".php");
-	  $nom_classe = "T".$page;
+	  require("xml/". str_replace("_", "/", $page) .".php");
+	  $nom_classe = "T" . $page;
 	  $iTransformation = new ${nom_classe}();
 	}
       else

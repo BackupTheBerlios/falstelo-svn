@@ -9,4 +9,5 @@ $GLOBALS["dbname"] = "www";
 $GLOBALS["dbuser"] = "www";
 $GLOBALS["dbpass"] = "soleil13";
 $GLOBALS["dbtype"] = "postgres";
+$GLOBALS["dbencoding"] = "UTF-8";
 ?>

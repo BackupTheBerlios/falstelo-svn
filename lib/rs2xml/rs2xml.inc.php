@@ -57,7 +57,7 @@
  *                          in rs2xml.dtd;
  */
 
-function rs2xml(&$rs, $callback = '', $attribs = array())
+function rs2xml(&$rs, $callback = '', $attribs = array(), $fields_xml = array())
 {
     if ( $rs->RecordCount()>0 && !is_array($rs->fields)) {
         trigger_error("[rs2xml()] Supplied resource is not a valid recordset", 256);
@@ -92,11 +92,15 @@ function rs2xml(&$rs, $callback = '', $attribs = array())
             //$xml  .= "<e>";
             $xml .= "<".$fName.">";
             $entry = $rsArr[$i][$k];
-            if ($callback) {
-                $entry = $callback($entry, $i, $k, &$rs);
-            } else {
-                $entry = cdata2pcdata($entry);
-            };
+	    if (in_array($fName, $fields_xml)){
+	    }
+	    else{
+	      if ($callback) {
+		$entry = $callback($entry, $i, $k, &$rs);
+	      } else {
+		$entry = cdata2pcdata($entry);
+	      };
+	    };
             //$xml .= "$entry</e>";
             $xml .= "$entry</$fName>";
         };

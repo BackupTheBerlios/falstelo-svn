@@ -29,6 +29,7 @@ class Ttransformation
   var $type_mime = "text/html";
 
   var $requetes_sql = array();
+  var $requetes_sql_champs_xml = array();
   var $fichiers_xml = array();
   var $array_nodexml = array();
   var $fichier_xslt = null;
@@ -65,10 +66,6 @@ class Ttransformation
       {
 	$this->type_mime = "text/xml";
       }
-    else
-      {
-	$this->type_mime = "text/html";
-      }
 
     foreach($this->fichiers_xml as $key => $fichier_xml) {
       $this->fichiers_xml[$key] = $this->xml_path . $fichier_xml;
@@ -99,6 +96,7 @@ class Ttransformation
     $dbuser = $GLOBALS["dbuser"];
     $dbpass = $GLOBALS["dbpass"];
     $dbtype = $GLOBALS["dbtype"];
+    $dbencoding = $GLOBALS["dbencoding"];
 
     if ( ! is_array($requetes) )
       {
@@ -108,7 +106,7 @@ class Ttransformation
     $db = &ADONewConnection($dbtype); // create a connection
     $connexion_result = $db->PConnect($dbhost,$dbuser,$dbpass,$dbname); // Connexion à la base
 
-    $xml = "<"."?"."xml version='1.0' encoding='UTF-8' ?".">\n";
+    $xml = "<"."?"."xml version='1.0' encoding='$dbencoding' ?".">\n";
     if ($connexion_result == false)
       {
 	$xml .= "<erreur>Erreur de connexion à la base de donnée</erreur>";
@@ -118,6 +116,10 @@ class Ttransformation
 	$xml .= "<requetes>";
 	foreach($requetes as $key => $sql)
 	  {
+	    $champs_xml = $this->requetes_sql_champs_xml[$key];
+	    if ($champs_xml == null){
+	      $champs_xml = array();
+	    }
 	    $recordset = $db->Execute($sql);
 	    if ( $recordset == false )
 	      {
@@ -125,7 +127,7 @@ class Ttransformation
 	      }
 	    else
 	      {
-		$xml .= rs2xml($recordset,'');
+		$xml .= rs2xml($recordset,'', array("key" => "$key"), $champs_xml);
 	      }
 	  }
 	$xml .= "</requetes>\n";
