@@ -41,7 +41,7 @@
       </head>
       <body>
 	<div class="top">
-	  <div class="logo"><img src="images/logo.png" alt="La Maison du Pastis - Marseille"/></div>
+	  <div class="logo"><img src="img/logo.png" alt="La Falstelo projekto - Logo"/></div>
 	</div>
 
 	<div class="main">
