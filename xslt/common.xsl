@@ -123,8 +123,7 @@
 
 	<!-- Pied de page -->
 	<div class="pied">
-	  <p>L'abus d'alcool est dangereux pour la santé. À consommer avec modération.</p>
-	  <p>© Copyright La Maison du Pastis, 2004. Pour toutes remarques: <a href="contact.html">contactez nous</a>.</p>
+	  <p>© Copyleft La Falstelo Projekto 2004.</p>
 	</div>
 	
       </body>
