@@ -8,19 +8,20 @@
     <meta name="Date" content="Mai 2004"/>
   </head>
   <body>
+	 <p>La documentation est en cours de rédaction.</p>
+	 
     <h1>Présentation</h1>
 
-    <p>Falstelo propose de faciliter la création d'un site web basé sur XSLT. Le but est de pouvoir générer des pages de manière simple, en ne spécifiant que le strict minimum : requètes SQL à exécuter, fichiers XML statiques à utiliser, feuille de style XSLT appliquée. Mais cependant, PHP Falstelo doit également pouvoir permettre d'ajouter des fonctionnalités supplémentaires sans difficultés, tout en restant très simple. En effet, PHP Falstelo fait un peut moins de 600 lignes, réparties principalement dans deux classes.</p>
+    <p>Falstelo se propose de faciliter la création d'un site web basé sur XML et XSLT. Le but est de pouvoir générer des pages de manière simple, en ne spécifiant que le strict minimum : requètes SQL à exécuter, fichiers XML statiques à utiliser, feuille de style XSLT appliquée. Cependant, Falstelo doit également permettre d'ajouter des fonctionnalités supplémentaires sans difficulté, tout en restant très simple. En effet, PHP Falstelo fait un peut moins de 600 lignes, réparties principalement dans deux classes. À l'heure actuelle, seule une version PHP de Fastelo est disponible, mais une version Java ou Python peuvent être envisagées et facilement écrites.</p>
 
     <h1>Prérequis</h1>
 
     <p>Afin de pouvoir utiliser PHP Falstelo pour votre site, il faut vous assurer que vous possèdez les élements suivant&#160;:</p>
     <ol>
-      <li>Apache avec le module mod_rewrite activé&#160;;</li>
-      <li>PHP avec le support d'au moins une base de donnée si vous désirez en utiliser une&#160;;</li>
+      <li>Apache, avec le module mod_rewrite activé&#160;;</li>
+      <li>mod_php, avec le support d'au moins une base de donnée si vous désirez en utiliser une&#160;;</li>
       <li>la librairie ADODB pour php, toujours dans le cas ou vous souhaitez utiliser une base de donnée&#160;;</li>
-      <li>le support de XML pour PHP&#160;;</li>
-      <li>le support des transformations par PHP, soit via Sablotron, soit via libxslt.</li>
+      <li>le support de XML pour PHP (php4-domxml) et éventuellement php4-xslt si vous souhaitez utiliser Sablotron comme processeur XSLT au lieu de libxslt fourni par php4-domxml&#160;;</li>
     </ol>
     
     <h1>Installation</h1>
@@ -29,21 +30,103 @@
 
     <h2>Version stable</h2>
 
-    <p>La version stable peut être téléchargée depuis la page d'accueil de Falstelo.</p>
+    <p>La version stable peut être téléchargée depuis la <a href="http://falstelo.eu.org/">page d'accueil de Falstelo</a>. Il vous suffit ensuite de décompresser l'archive à l'endroit de votre choix.</p>
 
     <h2>Version de développement</h2>
 
+	 <p>La version de développement peut être récupérée via Subversion&#160;:</p>
+	 
+	 <code>
+		svn checkout svn://svn.berlios.de/svnroot/falstelo/php/trunk
+	 </code>
+		
     <h2>Mise en place et configuration</h2>
+
+	 <p>Attention&#160;: si vous déplacez le répertoire de PHP Falstelo, il y a un fichier caché <code>.htaccess.tmpl</code> et votre fichier <code>.htaccess</code> qui pourrait ne pas être déplacé.</p>
+
+	 <h3>Fichier .htaccess</h3>
+
+	 <p>Pour faire fonctionner PHP Falstelo sur votre machine, il vous faut tout d'abord créer un fichier .htaccess à la racine de votre site. Pour cela, il suffit de copier le fichier modèle <code>.htaccess.tmpl</code> vers <code>.htaccess</code>. Il faut adapter la ligne suivante à votre configuration&#160;:</p>
+	 
+	 <p><code>RewriteRule ^([a-zA-Z0-9\-_]*).html$ /absolute/path/to/falstelo/index.php?page=$1 [L,QSA]</code></p>
+	 
+	 <p>La deuxième partie de la règle de réécriture d'URL contient le chemin absolu de votre installation, par rapport à la racine de votre serveur Web (et non pas par rapport à votre système de fichier !). Par exemple, si vous avez installé PHP Falstelo à la racine de votre site web, la ligne devra ressembler à ceci&#160;:</p>
+
+	 <p><code>RewriteRule ^([a-zA-Z0-9\-_]*).html$ /index.php?page=$1 [L,QSA]</code></p>
+
+	 <p>Dans le cadre d'une utilisation simple de PHP Falstelo, vous n'avez pas besoin de modifier plus ce fichier.</p>
+
+	 <h3>Fichier <code>variables.php</code></h3>
+
+	 <p>Le fichier <code>variables.php</code> du répertoire <code>lib/</code> contient tous les paramètres personnalisables de PHP Falstelo. Vous ne devez <em>pas</em> modifier ce fichier directement, mais il doit vous servir de modèle pour votre propre fichier de configuration <code>variables.php</code> du répertoire <code>usrlib/</code>. Votre fichier de configuration ne contiendra alors que vos paramètres personnels. Ainsi, si une nouvelle version de PHP Falstelo introduit de nouvelles variables, vous n'aurez pas besoin de réappliquer vos modifications au fichier <code>variables.php</code> de base, mais vous pourrez simplement garder votre fichier tel quel.</p>
+
+	 <p>Ce fichier de configuration configuration contient entre autres les paramètres de connexion à la base de donnée. Toutes les entrées sont commentés et vous pourrez ainsi facilement comprendre la signification de chaque paramètre.</p>
 
     <h1>Utilisation simple</h1>
 
-    <h2>Pages statiques</h2>
+	 <p>Une fois PHP Falsteo installé, vous pouvez accéder à la page d'accueil par l'adresse <code>accueil.html</code>. Vous tomberez alors sur la page d'accueil de Falstelo (le site web et sa documentation sont inclus dans la distribution de Falstelo), qui pourra alors vous servir de modèle pour vos propres pages.</p>
 
-    <h2>Pages dynamiques</h2>
+	 <p>Falstelo peut transformer deux types de pages. Des pages XML statiques, telles que la page <code>accueil.xml</code>, ou alors des pages dynamiques, utilisant des requètes vers une base de donnée. Grâce à l'utilisation d'une règle de réécriture d'URL (dans le <code>.htaccess</code> tel que nous l'avons vu plus haut), lorsque vous demandez la page <code>sous_rep/test.html</code>, c'est en réalité la page <code>index.php?page=sous_rep/test</code> qui sera appellée par Apache.</p>
+
+	 <p>Lorque vous demander la page <code>test</code>, il peut se présenter plusieurs cas de figures&#160;:</p>
+
+	 <ul>
+		<li>
+		  Le fichier <code>test.xml</code> existe, c'est le cas d'une page statique que nous expliquerons en premier lieu.
+		</li>
+		<li>
+		  Le fichier <code>test.xml</code> n'existe pas, mais il existe un fichier <code>test.php</code>, c'est le cas des pages dynamique que nous expliquerons ensuite.
+		</li>
+		<li>
+		  Ni le fichier <code>test.xml</code>, ni <code>test.php</code> n'existe. Dans ce cas, c'est la page d'erreur (par défaut <code>404</code>) qui sera affichée, qu'elle soit dynamique ou statique.
+		</li>
+	 </ul>
+
+	 <p>Par la suite, les exemples cités sont disponibles dans le répertoire <code>exemple/</code> de PHP Falstelo. Il est déconseillé, si vous ne connaissez pas très bien XSLT, de commencer par regarder les fichiers du site web de Falstelo.</p>
+
+    <h2>Pages statiques simples</h2>
+
+	 <p>Pour faire transformer à PHP Falselo une page XML classique, il vous faut créer une feuille de style XSLT à votre goût. En général, les feuilles de styles sont placés dans le répertoire XSLT, mais vous êtes libres de les placer où bon vous semble si vous préférer organiser votre site web de manière différente. Créez ensuite un fichier XML classique contenant le contenu que vous souhaitez transformer. Comme PHP Falstelo peut utiliser (voir plus bas dans l'utilisation avancée) plusieurs fichiers XML en entrée et des requètes SQL, le document XML sera inclu dans un document XML plus vaste.</p>
+
+	 <p>Par exemple, créez le document <code>exemple/statique.xml</code> à la racine de votre site&#160;:</p>
+
+	 <pre><![CDATA[<?xml version='1.0' encoding='UTF-8'?>
+<racine>
+  Test
+</racine>
+]]></pre>
+
+	 <p>Ensuite, faites afficher la page <code>exemple/statique.html</code>. Vous obtiendez ceci&#160;:</p>
+
+	 <pre><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<page>
+  <fichiers>
+    <racine>
+      Test
+    </racine>
+  </fichiers>
+</page>
+]]></pre>
+
+    <p>Plusieurs choses se sont produites&#160;: premièrement, le contenu de votre fichier XML a été inclu dans la balise <code>fichiers</code>. En effet, comme nous le verrons par la suite, le résultat de vos requètes SQL sera disponible sous une autre balise, et vous pourrez également ajouter les données de votre choix sous le nom que vous voulez, comme fils direct de l'élement <code>page</code>. Deuxièmement, le fichier n'a été transformé par aucune feuille de style. En effet, puisqu'aucune feuille de style n'a été précisée dans l'entête du fichier XML, aucune transformation n'a été effectuée. Pour effectuer un transformation par rapport à votre feuille de sytle, vous devez ajouter l'instruction de traitement caractéristique juste après l'entête XML de votre fichier <code>exemple/statique.xml</code>&#160;:</p>
+
+	 <pre><![CDATA[<?xml-stylesheet href="./xslt/simple.xsl" type="text/xsl"?>]]></pre>
+
+	 <p>Ici, on suppose que votre fichier XSLT est placé dans le répertoire <code>xslt</code> par rapport au répertoire où se trouve votre fichier <code>exemple/statique.xml</code>. Dans le cas où PHP Falstelo ne trouve pas la feuille de style à appliquer (soit parce que l'instruction de traitement n'est pas présente, soit parce que le fichier spécifié est introuvable), votre fichier XML sera alors affiché sans aucune transformation.</p>
+
+    <h2>Pages dynamiques ou statiques multiples</h2>
+
+	 <p>Dès lors qu'un seul fichier XML statique ne suffit pas, il faut passer par un fichier PHP, contenant la liste des fichiers XML statiques ou des requètes SQL dont vous avez besoin. Votre fichier PHP contiendra une classe sur un modèle bien défini.</p>
+	 
+	 <p>Pour expliquer comment s'articule une telle classe PHP, nous verrons dans un premier temps le cas de fichiers XML multiples en expliquant les différentes instructions utilisés. Ensuite, nous expliquerons quelles instructions il est nécessaire d'ajouter pour effectuer des requètes SQL.</p>
+
+	 <h3>Définir les fichiers XML utilsés</h3>
+
+	 <h3>Utiliser des requètes SQL</h3>
 
     <h1>Utilsation avancée : personnalisation</h1>
 
-    Créer un fichier <tt>tusrtransformation.php</tt>.
+    <p>Utilisez le fichier <code>tusrtransformation.php</code>.</p>
 
   </body>
 </html>

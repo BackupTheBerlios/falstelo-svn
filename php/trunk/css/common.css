@@ -216,4 +216,8 @@ div.pied
   {
     margin-left: 2em;
   }
+  div.contenu
+  {
+	border: none;
+  }
 }

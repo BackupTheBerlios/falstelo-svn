@@ -11,7 +11,7 @@
   <p>L'objectif est de laisser à l'utilisateur uniquement la gestion des requetes SQL ainsi que de l'écriture des feuilles XSLT. Falstelo s'occupe de l'extraction des données en XML, de la transformation XSLT, et éventuellement du cache disque.</p>
   <p>De plus, Fastelo est facilement surchargeable afin d'ajouter une gestion multilangue à votre convenance, ainsi qu'une gestion des sessions. Des modèles d'implémentation de ces fonctions vous sont proposés, que vous pourrez adapter à vos besoins.</p>
   <p>L'implémentation actuelle de Falstelo est faite en PHP, mais sa simplicité (environ 500 lignes de code), fait qu'il est très facilement portable dans d'autre langages, comme Java (langage initial du projet, développé lors d'un projet Java à l'UTBM) ou Python.</p>
-  <p>PHP Falstelo est disponible selon les termes de la licence GPL.</p>
+  <p>PHP Falstelo est développé par Nicolas Bouillon et par Damien Boucard. Il est disponible selon les termes de la licence GPL.</p>
   </body>
 </html>
 

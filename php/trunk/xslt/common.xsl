@@ -2,7 +2,8 @@
 <xsl:stylesheet 
  version="1.0" 
  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
- xmlns="http://www.w3.org/1999/xhtml">
+ xmlns="http://www.w3.org/1999/xhtml"
+ xmlns:html="http://www.w3.org/1999/xhtml">
   <xsl:output
    doctype-public="-//W3C//DTD XHTML 1.0 Transitional//EN"
    doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"
@@ -12,7 +13,7 @@
    omit-xml-declaration="no"
    version="1.0"/>
 
-  <xsl:param name="baseurl" select="'http://lisa.bouil.org/~bouil/internet/falstelo/php/trunk/'"/>
+  <xsl:param name="baseurl" select="'http://falstelo.bouil.org/'"/>
   <xsl:param name="Message" select="''"/>
   <xsl:param name="titre-page"  xmlns:html="http://www.w3.org/1999/xhtml" select="//html:html/html:head/html:title"/>
   <xsl:param name="css-file"  xmlns:html="http://www.w3.org/1999/xhtml" select="'common.css'"/>
@@ -23,8 +24,8 @@
 	<base href="{$baseurl}"/>
 	<title>Falstelo - <xsl:value-of select="$titre-page"/></title>
 	<xsl:choose>
-	  <xsl:when xmlns:html="http://www.w3.org/1999/xhtml" test="count(//html:html/html:head/html:link[@rel='stylesheet']/@href) != 0">
-	    <link rel="stylesheet" xmlns:html="http://www.w3.org/1999/xhtml" href="{$baseurl}css/{//html:html/html:head/html:link[@rel='stylesheet']/@href}" type="text/css" title="Classique"/>
+	  <xsl:when test="count(//html:html/html:head/html:link[@rel='stylesheet']/@href) != 0">
+	    <link rel="stylesheet" href="{$baseurl}css/{//html:html/html:head/html:link[@rel='stylesheet']/@href}" type="text/css" title="Classique"/>
 	  </xsl:when>
 	  <xsl:otherwise>
 	    <link rel="stylesheet" href="{$baseurl}css/{$css-file}" type="text/css" title="Classique"/>
@@ -57,7 +58,7 @@
 		    <li><a href="https://developer.berlios.de/bugs/?group_id=1734">Rapports de bugs</a></li>
 		  </ul>
 		</li>
-		<li><a href="contact.html">Contact</a></li>
+		<!--<li><a href="contact.html">Contact</a></li>-->
 	      </ul>
 	    </div>
 	  </div>
@@ -92,13 +93,13 @@
     <h1 style="color: red; text-align: center;"><xsl:apply-templates/></h1>
   </xsl:template>
 
-  <xsl:template xmlns:html="http://www.w3.org/1999/xhtml" match="html">
+  <xsl:template match="html">
     <xsl:apply-templates select="html:body"/>
   </xsl:template>
 
-  <xsl:template xmlns:html="http://www.w3.org/1999/xhtml" match="html:html/html:head"/>
+  <xsl:template match="html:html/html:head"/>
 
-  <xsl:template xmlns:html="http://www.w3.org/1999/xhtml" match="html:body">
+  <xsl:template match="html:body">
     <xsl:copy-of select="text() | *"/>
   </xsl:template>
 
