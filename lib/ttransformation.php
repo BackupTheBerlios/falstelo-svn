@@ -6,27 +6,26 @@
  */
 
 require_once("adodb.inc.php");
+require_once("rs2xml/rs2xml.inc.php");
 
+require_once("variables.php");
 if (file_exists("usrlib/variables.php"))
 {
   require_once("usrlib/variables.php");
 }
-else
-{
-  require_once("variables.php");
-}
-
-require_once("rs2xml/rs2xml.inc.php");
 
 class Ttransformation{
-  var $cache_path = "cache/";
+  //valeurs par défaut qui seront écrasées par variables.php
+  var $USE_SABLOTRON = false;
+  var $type_mime = "text/html"; //type mime renvoyé par défaut
   var $temps_cache = 0; //en secondes. Par défaut, pas de cache.
+
+  var $cache_path = "cache/"; //le répertoire ou seront stoqué les fichiers de cache. Doit etre écrivable par apache/php
   var $xml_path = ""; //sera ajouté au début de chaque chemin XML
   var $xslt_path = ""; //idem pour les XSLT 
-  var $voir_xml = false;
+  var $voir_xml = false; // est ce qu'on effectue la transformation XSLT
   var $page = ""; //page affichée
   var $page_demandee = ""; //page demandée, peut etre differente, par exemple page_demandee = "nonexist" et page = "404"
-  var $type_mime = "text/html";
 
   var $requetes_sql = array();
   var $requetes_sql_champs_xml = array();
@@ -35,22 +34,33 @@ class Ttransformation{
   var $fichier_xslt = null;
   var $xslt_params = array();
   
-  var $USE_SABLOTRON = true;
-
-  function Ttransformation($page, $page_demandee) //constructeur
+  
+  /**
+Constructeur de l'objet.
+  */
+  function Ttransformation($page, $page_demandee)
   {
+    $this->USE_SABLOTRON = $GLOBALS["USE_SABLOTRON"];
+    $this->type_mime = $GLOBALS["TYPE_MIME"];
+    $this->temps_cache = $GLOBALS["TEMPS_CACHE"];
+
     $this->page = $page;
     $this->page_demandee = $page_demandee;
   }
 
+  /**
+Retourne la page demandée, ou bien la page d'erreur $page_erreur si la page n'existe pas. Accessoirement prends le fichier tu cache s'il existe et s'il n'est pas expiré, sinon écrit le fichier résultat dans le cache.
+@returns String contenant le code à afficher.
+  */
   function get()
   {
     $fichier_cache = $this->cache_path . $this->page . ".html";
-    if (file_exists($fichier_cache) && (filemtime($fichier_cache) + $this->temps_cache > time()) && filemtime($fichier_cache) > filemtime($this->fichier_xslt)){ // on utilise la version qui vient du cache
+    if (file_exists($fichier_cache) && (filemtime($fichier_cache) + $this->temps_cache > time()) && filemtime($fichier_cache) > filemtime($this->fichier_xslt)){
+      // on utilise la version qui vient du cache
       return file_get_contents($fichier_cache);
     }
-    else{ // on genere la page
-      
+    else{
+      // on genere la page
       $html = $this->transformer();
       
       // si temps_cache > 0, alors on écrit le fichier dans le cache.
@@ -69,6 +79,9 @@ class Ttransformation{
     }
   }
 
+  /**
+Cette fonction effectue la transformation et retourne la chaine résultat. Cependant, si le fichier XSLT n'est pas défini, aucune transformation n'est effectuée, et le XML est retourné tel quel. Le type MIME est alors modifé en text/xml.
+  */
   function transformer()
   {
     if ( $this->fichier_xslt == "" || $this->fichier_xslt == null ){
@@ -97,9 +110,12 @@ class Ttransformation{
     else{
       $html = $domxml->dump_mem(true,"UTF-8");
     }
-      return $html;
+    return $html;
   }
 
+  /**
+Transforme la liste des requetes SQL en un ensemble de noeuds XML contenant le résultat.
+  */
   function sql_vers_xml($requetes)
   {
     $dbhost = $GLOBALS["dbhost"];
@@ -155,6 +171,9 @@ class Ttransformation{
     }
   }
 
+  /**
+Ouvre tous les fichiers XML données et les retourne en tant que noeud XML
+  */
   function fichiers_vers_xml($array_fichiers){
     $dom_all = domxml_new_doc("1.0");
     $root_all = $dom_all->create_element("fichiers");
@@ -168,6 +187,9 @@ class Ttransformation{
     return $root_all;
   }
 
+  /**
+Prends tous les nodes XML du tableau, et les place dans un seul document XML
+  */
   function agreger_xml($array_nodexml){
     $dom = domxml_new_doc("1.0");
     $root = $dom->create_element("page");
@@ -180,13 +202,17 @@ class Ttransformation{
     return $dom;
   }
 
+  /**
+Transforme le document DOM XML donné en autre chose grace à la feuille de style donnée.
+TODO: Support de transformation en cascade, avec plusieurs feuilles de style ?
+  */
   function xml_vers_html($domxml, $fichier_xslt)
   {
     if (! $this->USE_SABLOTRON ){
       $xsltproc = domxml_xslt_stylesheet_file($fichier_xslt);
       $result = $xsltproc->process($domxml, $this->xslt_params);
       return $result->dump_mem();
-    //return $xsltproc->result_dump_mem($result);
+      //return $xsltproc->result_dump_mem($result);
     }
     else{
       $xml = $domxml->dump_mem(true,"UTF-8");

@@ -2,8 +2,11 @@
 <?xml-stylesheet href="xslt/accueil.xsl" type="text/xsl" ?>
 <page>
   <titre>Bonvenon sur la ĉefpaĝo de la « falstelo » projekto !</titre>
-  <intro></intro>
-  <texte>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Pellentesque mi odio, cursus ac, vulputate ac, luctus eu, nisl. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Cras ut massa sed felis sagittis placerat. Curabitur id tellus in nunc blandit bibendum. Nullam consequat libero ut augue. Sed nec sem. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Morbi luctus eros at purus. Aliquam quam. Quisque ultrices blandit orci. Donec quis urna. Vestibulum mattis. Duis adipiscing nonummy nunc. Donec vel est. Integer hendrerit. Phasellus ut dolor. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.</texte>
-  <texte>Aenean felis eros, porttitor ut, iaculis sit amet, tincidunt a, quam. Phasellus pulvinar nunc placerat libero. Donec non quam vel elit sagittis tempor. Vestibulum eu turpis ac nibh rhoncus laoreet. Nunc cursus, odio eget vestibulum vestibulum, dui tellus mollis nisl, at tempus velit sapien a turpis. Donec et ipsum a ligula luctus ultricies. Curabitur tortor felis, porttitor a, dapibus ut, congue ac, sem. Vestibulum imperdiet eleifend velit. Aliquam vitae tortor. Nunc purus. Donec viverra eros eu ante. Suspendisse molestie nibh eget arcu. Donec wisi justo, bibendum eget, pulvinar vel, varius sit amet, diam. Praesent sem est, porta at, rhoncus quis, gravida sit amet, pede. </texte>
+  <intro>Un moteur de transformation XSLT</intro>
+  <texte>Falstelo a pour but de proposer un ensemble de classes facilitant la mise en place d'un site web basé sur XML et XSLT, pouvant également utiliser une base de donnée.</texte>
+  <texte>L'objectif est de laisser à l'utilisateur uniquement la gestion des requetes SQL ainsi que de l'écriture des feuilles XSLT. Falstelo s'occupe de l'extraction des données en XML, et de la transformation XSLT, et éventuellement du cache disque.</texte>
+  <texte>De plus, Fastelo est facilement surchargeable afin d'ajouter une gestion multilangue à votre convenance, ainsi qu'une gestion des sessions. Des modèles d'implémentation de ces fonctions vous sont proposés, que vous pourrez adapter à vos besoins.</texte>
+  <texte>L'implémentation actuelle de Falstelo est faite en PHP, mais sa simplicité (environ 500 lignes de code), fait qu'il est très facilement portable dans d'autre langages, comme Java (langage initial du projet, développé lors d'un projet Java à l'UTBM) ou Python.</texte>
+  <texte>Un serveur Subversion sera prochainement mis à votre disposition afin que vous puissiez récupérer le code source du projet.</texte>
 </page>
 

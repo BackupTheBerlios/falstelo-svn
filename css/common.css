@@ -47,6 +47,7 @@ div.contenu
   border: 2px solid #ffd249;
   padding: 1em;
   -moz-border-radius-topright: 10px;
+  -moz-border-radius-bottomleft: 10px;
   min-height: 25em;
 /*  -moz-opacity: 0.8;*/
   background-color: white;
@@ -303,7 +304,7 @@ div.main
   margin-top: 2em;
   margin-right: 2em;
   margin-bottom: 1em;
-  margin-left: 11em;
+  margin-left: 2em;
   text-align: justify;
 }
 

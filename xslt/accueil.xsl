@@ -12,6 +12,7 @@
    version="1.0"/>
 
   <xsl:include href="common.xsl"/>
+
   <xsl:variable name="titre-page">Ĉefpaĝo</xsl:variable>
   <xsl:variable name="css-file">common.css</xsl:variable>
   <xsl:variable name="onglet">Ĉefpaĝo</xsl:variable>
@@ -22,6 +23,10 @@
 
   <xsl:template match="titre">
     <h1><xsl:apply-templates/></h1>
+  </xsl:template>
+
+  <xsl:template match="intro">
+    <p style="font-weight: bold"><xsl:apply-templates/></p>
   </xsl:template>
 
   <xsl:template match="image">

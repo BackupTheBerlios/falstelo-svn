@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- xmlns="http://www.w3.org/1999/xhtml"-->
 <xsl:stylesheet 
  version="1.0" 
  xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
@@ -45,57 +44,7 @@
 	  <div class="logo"><img src="images/logo.png" alt="La Maison du Pastis - Marseille"/></div>
 	</div>
 
-	<!-- Boites de coté -->
-	<div class="boites">
-	  <div class="boite login">
-	    <p class="titre">Login</p>
-	    <div class="corps">
-	      <xsl:choose>
-		<xsl:when test="/document/client/@cl_login">
-		  Bienvenue <xsl:value-of select="/document/client/@cl_login"/>
-		  <br/>
-		  <a href="compte_logout.html">Se déconneter</a>
-		</xsl:when>
-		<xsl:otherwise>
-		  <form name="login" action="compte_login.html" method="post">
-		    Identifiant :<br/>
-		    <input class="text" type="text" name="cl_login" size="10"/><br/>
-		    Mot de passe :<br/>
-		    <input class="text" type="password" name="cl_passwd" size="10"/><br/>
-		    <input type="submit" value="OK" size="10"/><br/>
-		    <a href="inscrire.html">Nouveau client ?</a>
-		  </form>
-		</xsl:otherwise>
-	      </xsl:choose>
-	    </div>
-	  </div>
-
-	  <div class="boite recherche">
-	    <p class="titre">Recherche</p>
-	    <div class="corps">
-	      <form name="recherche_rapide" action="recherche_resultat.html" method="post">
-		<input class="text" type="text" name="pattern" size="10"/><br/>
-		<!--							<input type="submit" value="->"/>						-->
-		<input type="image" name="envoi" src="images/go.png"/>
-	      </form>
-	      <a href="recherche_avance.html">Recherche avancée</a>
-	    </div>
-	  </div>
-
-	  <xsl:apply-templates select="page/session/panier"/>
-
-	  <div class="boite categories">
-	    <p class="titre">Catégories</p>
-	    <div class="corps">
-	      <xsl:apply-templates select="page/categories"/>
-	    </div>
-	  </div>
-
-	</div>
-	<!-- Fin Boites -->
-
 	<div class="main">
-
 
 	  <div class="onglets">
 	    <ul class="liens">
@@ -103,14 +52,14 @@
 		<xsl:with-param name="NomOnglet" select="'Ĉefpaĝo'"/>
 		<xsl:with-param name="LienOnglet" select="'accueil.html'"/>
 	      </xsl:call-template>
-	      <xsl:call-template name="Onglet">
+<!--	      <xsl:call-template name="Onglet">
 		<xsl:with-param name="NomOnglet" select="'Kompendio'"/>
 		<xsl:with-param name="LienOnglet" select="'manuel.html'"/>
 	      </xsl:call-template>
 	      <xsl:call-template name="Onglet">
 		<xsl:with-param name="NomOnglet" select="'Kontaktu nin'"/>
 		<xsl:with-param name="LienOnglet" select="'contact.html'"/>
-	      </xsl:call-template>
+	      </xsl:call-template>-->
 	    </ul>
 	  </div>
 
@@ -123,7 +72,7 @@
 	    <xsl:apply-templates select="page/fichiers | page/requetes"/>
 	  </div>
 
-	  <div class="onglets ongletsbas">
+<!--	  <div class="onglets ongletsbas">
 	    <ul class="liens">
 	      <li class="unselected">
 		<a href="">FR</a>
@@ -132,7 +81,7 @@
 		<a href="">EO</a>
 	      </li>
 	    </ul>
-	  </div>
+	  </div>-->
 
 	</div>
 
