@@ -225,6 +225,7 @@ div.onglets ul.liens li.unselected a:hover
 
 div.boites
 {
+  margin-top: 2em;
   margin-left: 0.5em;
   float: left;
   width: 9em;
@@ -283,7 +284,7 @@ div.boites input.text
 
 div.main
 {
-  margin-top: 160px;
+  margin-top: 2em;
   margin-right: 2em;
   margin-bottom: 1em;
   margin-left: 11em;
