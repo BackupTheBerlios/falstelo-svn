@@ -7,8 +7,8 @@
 /*
  * Fichier par défaut du répertoire.
  */
- 
-require("lib/tprincipal.php");
+
+require_once("lib/tprincipal.php");
 
 // Si la page a été appellée sans arguments
 global $HTTP_GET_VARS;

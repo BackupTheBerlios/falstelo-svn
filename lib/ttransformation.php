@@ -5,18 +5,18 @@
  * Contient du code GPL provenant de www.libretudes.org et de lolut.utbm.info
  */
 
-require("adodb.inc.php");
+require_once("adodb.inc.php");
 
 if (file_exists("usrlib/variables.php"))
 {
-  require("usrlib/variables.php");
+  require_once("usrlib/variables.php");
 }
 else
 {
-  require("variables.php");
+  require_once("variables.php");
 }
 
-require("rs2xml/rs2xml.inc.php");
+require_once("rs2xml/rs2xml.inc.php");
 
 class Ttransformation
 {
@@ -25,6 +25,8 @@ class Ttransformation
   var $xslt_path = ""; //idem pour les XSLT 
   var $temps_cache = 0;
   var $voir_xml = false;
+  var $page = ""; //page affichée
+  var $page_demandee = ""; //page demandée, peut etre differente, par exemple page_demandee = "nonexist" et page = "404"
   var $type_mime = "text/html";
 
   var $requetes_sql = array();

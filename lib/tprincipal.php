@@ -15,17 +15,18 @@ $temps_depart = gettimeofday();
 
 class Tprincipal
 {
+  function extract_processing_instruction(&$dom){
+    $xpth = $dom->xpath_new_context();
+    $pis = $xpth->xpath_eval("//self::processing-instruction()");
+    return $pis;
+  }
+
   function extract_stylesheet_filename($fichier_xml)
     {
       // ! Le fichier xml ne doit avoir qu'une seule processing instruction
-      function extract_processing_instruction(&$dom)
-	{
-	  $xpth = $dom->xpath_new_context();
-	  $pis = $xpth->xpath_eval("//self::processing-instruction()");
-	  return $pis;
-	}
+
       $dom = domxml_open_file($fichier_xml);
-      $pis = extract_processing_instruction($dom);
+      $pis = $this->extract_processing_instruction($dom);
       $node = $pis->nodeset[0];
       if ( $node != null)
 	{
@@ -38,21 +39,22 @@ class Tprincipal
 	}
     }
 
-  function servir_page($page)
+  function servir_page($page_demandee)
     {
+      $page = $page_demandee;
       global $voir_xml;
-      // Test d'existence du fichier correspondant à la page demand�
-      if ( file_exists("xml/" . $page . ".php") )
+      // Test d'existence du fichier correspondant à la page demandée
+      if ( file_exists($page . ".php") )
 	{
 	  // le fichier .php existe, on l'utilise alors (cas des pages dynamiques, avec accès à la bdd)
-	  require("xml/" . $page . ".php");
+	  require_once($page . ".php");
 	  $nom_classe = "T" . $page;
 	  $iTransformation = new ${nom_classe}();
 	}
       else
 	{
 	  // le fichier $page.php n'existe pas, peut etre qu'un fichier $page.xml existe (cas des pages statiques)
-	  if ( !file_exists("xml/" . $page . ".xml") )
+	  if ( !file_exists($page . ".xml") )
 	    {
 	      // ni fichier .php, ni fichier .xml. La page demandée n'existe donc pas.
 	      // Affichage de la page statique d'erreur à la place
@@ -62,17 +64,17 @@ class Tprincipal
 		
 	  // On teste pour voir si l'utilisateur a surchargé lui meme la classe TTransformation
 	  if (file_exists("usrlib/tusrtransformation.php")){
-	    require("usrlib/tusrtransformation.php");
+	    require_once("usrlib/tusrtransformation.php");
 	    $nom_classe = "Tusrtransformation";
 	  }
 	  else {
-	    require("lib/ttransformation.php");
+	    require_once("lib/ttransformation.php");
 	    $nom_classe = "Ttransformation";
 	  }
 	  $iTransformation = new ${nom_classe}();
 
 	  // recherche le nom de la feuille de style
-	  $fichiers_xml = array("xml/".$page.".xml");
+	  $fichiers_xml = array($page.".xml");
 	  if ($voir_xml == false)
 	    {
 	      $xml_path = dirname($fichiers_xml[0]);
@@ -90,6 +92,8 @@ class Tprincipal
 	}
 
       $iTransformation->voir_xml = $voir_xml;
+      $iTransformation->page_demandee = $page_demandee;
+      $iTransformation->page = $page;
 		
       $resultat = $iTransformation->get(); //affichage de la page.
       header("Content-type: $iTransformation->type_mime");
