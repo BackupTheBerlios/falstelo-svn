@@ -18,13 +18,12 @@ else
 
 require("rs2xml/rs2xml.inc.php");
 
-
 class Ttransformation
 {
   var $cache_path = "cache/";
   var $xml_path = "";
   var $xslt_path = "";
-  var $peut_etre_en_cache = true;
+  var $temps_cache = 0;
   var $voir_xml = false;
   var $type_mime = "text/html";
 
@@ -103,60 +102,70 @@ class Ttransformation
 	return null;//"<erreur>Erreur, l'argument $sql n'est pas un tableau</erreur>";
 	//exit;
       }
-    $db = &ADONewConnection($dbtype); // create a connection
-    $connexion_result = $db->PConnect($dbhost,$dbuser,$dbpass,$dbname); // Connexion à la base
+    
+    if (sizeof($requetes)>0){
 
-    $xml = "<"."?"."xml version='1.0' encoding='$dbencoding' ?".">\n";
-    if ($connexion_result == false)
-      {
-	$xml .= "<erreur>Erreur de connexion à la base de donnée</erreur>";
-      }
-    else
-      {
-	$xml .= "<requetes>";
-	foreach($requetes as $key => $sql)
-	  {
-	    $champs_xml = $this->requetes_sql_champs_xml[$key];
-	    if ($champs_xml == null){
-	      $champs_xml = array();
+      
+      $db = &ADONewConnection($dbtype); // create a connection
+      $connexion_result = $db->PConnect($dbhost,$dbuser,$dbpass,$dbname); // Connexion à la base
+      
+      if ($connexion_result == false)
+	{
+	  $xml = "<"."?"."xml version='1.0' encoding='UTF-8' ?".">\n";
+	  $xml .= "<erreur>Erreur de connexion à la base de donnée</erreur>";
+	}
+      else
+	{
+	  $xml = "<"."?"."xml version='1.0' encoding='$dbencoding' ?".">\n";
+	  $xml .= "<requetes>";
+	  foreach($requetes as $key => $sql)
+	    {
+	      $champs_xml = $this->requetes_sql_champs_xml[$key];
+	      if ($champs_xml == null){
+		$champs_xml = array();
+	      }
+	      $recordset = $db->Execute($sql);
+	      if ( $recordset == false )
+		{
+		  $xml .= "<erreur>" .  $db->ErrorMsg() . " ($sql)</erreur>";
+		}
+	      else
+		{
+		  $xml .= rs2xml($recordset,'', array("key" => "$key"), $champs_xml);
+		}
 	    }
-	    $recordset = $db->Execute($sql);
-	    if ( $recordset == false )
-	      {
-		$xml .= "<erreur>" .  $db->ErrorMsg() . " ($sql)</erreur>";
-	      }
-	    else
-	      {
-		$xml .= rs2xml($recordset,'', array("key" => "$key"), $champs_xml);
-	      }
-	  }
-	$xml .= "</requetes>\n";
-      }
-    $domxml = domxml_open_mem($xml);
-    return $domxml->document_element();
+	  $xml .= "</requetes>\n";
+	}
+      $domxml = domxml_open_mem($xml);
+      return $domxml->document_element();
+    }
+    else{
+      return null;
+    }
   }
 
   function fichiers_vers_xml($array_fichiers){
     $dom_all = domxml_new_doc("1.0");
     $root_all = $dom_all->create_element("fichiers");
-    $dom_all->append_child($root_all);
+
     foreach($array_fichiers as $key => $fichier_xml){
       $dom = domxml_open_file($fichier_xml);
       $root = $dom->document_element();
       $root_all->append_child($root->clone_node(true));
     }
+    $dom_all->append_child($root_all);
     return $root_all;
   }
 
   function agreger_xml($array_nodexml){
     $dom = domxml_new_doc("1.0");
     $root = $dom->create_element("page");
-    $dom->append_child($root);
     foreach($array_nodexml as $key=>$node){
       if ($node != null){
 	$root->append_child($node->clone_node(true));
       }
     }
+    $dom->append_child($root);
     return $dom;
   }
 
@@ -164,8 +173,9 @@ class Ttransformation
   {
     if (! $this->USE_SABLOTRON ){
       $xsltproc = domxml_xslt_stylesheet_file($fichier_xslt);
-      $result = $xsltproc->process($domxml);
-      return $xsltproc->result_dump_mem($result);
+      $result = $xsltproc->process($domxml, $this->xslt_params);
+      return $result->dump_mem();
+    //return $xsltproc->result_dump_mem($result);
     }
     else{
       $xml = $domxml->dump_mem(true,"UTF-8");
