@@ -1,0 +1,8 @@
+#ErrorDocument 404 /~bouil/internet/lamaisondupastis.com/www/principal.php
+Order Deny,Allow
+Allow From All 
+
+DirectoryIndex index.php
+
+RewriteEngine On
+RewriteRule ^([a-zA-Z0-9\-_]*).html$ /~bouil/internet/lamaisondupastis.com/www/index.php?page=$1 [L,QSA]

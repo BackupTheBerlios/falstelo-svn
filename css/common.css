@@ -1,0 +1,292 @@
+@import url("tableau.css");
+
+/*
+
+  Bleu foncé : #ffd249
+  Orange : #4154a3
+
+  Couleur de l'onglet selectionné:      #EABD86; (sable)
+                                        #FFD700;
+                                        url("../images/sable.jpg")
+  Couleur de l'onglet non selectionné:  #73ADDF; (bleu)
+                                        #94BAE7;
+                                        url("../images/nuage.jpg")
+  Couleur de fond des formulaires:      #EEEEEE;
+*/
+
+.devel
+{
+  float: right;
+  background-color: #AA0000;
+  color: white;
+  font-weight: bold;
+  padding: 0.2em;
+  border: 1px solid black;
+}
+
+html, body
+{
+  font-family: sans-serif;
+  margin: 0px;
+  padding: 0px;
+  padding-bottom: 20px;
+}
+
+div.contenu
+{ 
+  border: 2px solid #ffd249;
+  padding: 1em;
+  -moz-border-radius-topright: 10px;
+  min-height: 25em;
+}
+
+div.contenu p.message
+{
+  text-align: center;
+  border : 2px solid red;
+  padding: 0.3em;
+}
+
+h1
+{
+  font-size: 1.3em;
+  margin-bottom: 1em;
+  text-align: center;
+  padding-bottom: 0.2em;
+/*  border-bottom: 1px dotted black;*/
+}
+
+form
+{
+  margin: 0px;
+  padding: 0px;
+}
+
+input, select
+{
+  margin: 0.2em;
+  border: 1px groove black;
+  padding: 0.2em;
+  background-color: #EEEEEE;
+}
+
+
+table
+{
+  border-collapse: collapse;
+  border-style: none;
+  text-align: left;
+}
+
+a
+{
+  text-decoration: none;
+  color: #4154a3;
+
+}
+
+a:hover
+{
+  text-decoration : underline;
+}
+
+img
+{
+  padding: 0px;
+  margin: 0px;
+  border: none;
+}
+
+
+.montant
+{
+  text-align: right;
+}
+
+/*
+.montant:after
+{
+  content: ' ¤';
+}
+*/
+
+.nombre
+{
+  text-align: right;
+}
+
+
+ul
+{
+  list-style: none;
+  margin: 0px;
+  padding: 0px;
+}
+ul li
+{
+  list-style: none;
+  margin: 0px;
+  padding: 0px;
+}
+
+/* Entete */
+
+div.top
+{ 
+/*  position: absolute;
+  left: 0;
+  top:0;*/
+}
+
+div.logo
+{ 
+}
+
+
+div.onglets
+{ 
+  z-index: 1;
+}
+
+div.onglets ul.liens
+{ 
+}
+
+div.onglets ul.liens li
+{ 
+/*  border: 1px solid green;*/
+  display: inline;
+  text-align: center;
+  font-weight: bold;
+
+}
+
+div.onglets ul.liens li a
+{
+
+  -moz-border-radius-topleft: 1.1em;
+  -moz-border-radius-topright: 1.1em;
+
+  padding-left: 1.5em;
+  padding-right: 1.5em;
+}
+
+div.onglets ul.liens li.selected a
+{ 
+  color: #4154a3; 
+  background-color: #ffd249;
+  color: #4154a3;
+/*  border: 2px solid #ffd249;
+  border-bottom: none;*/
+  
+}
+
+div.onglets ul.liens li.unselected a
+{ 
+  background-color: #4154a3;
+  color:  #ffd249;
+/*  border: 2px solid #ffd249;;
+  border-bottom: none;*/
+  color:  #ffd249;
+}
+
+div.onglets ul.liens li.unselected a:hover
+{
+  background-color:  #ffd249;
+  color: #4154a3;
+  text-decoration: none;
+}
+
+
+
+/* Fin Entete */
+
+/* Barre de gauche */
+
+@media print
+{
+  div.boites
+  {
+    display: none;
+  }
+}
+
+div.boites
+{
+  margin-top: 2em;
+  margin-left: 0.5em;
+  float: left;
+  width: 9em;
+}
+
+div.boites div.boite
+{
+  clear: both;
+  margin: 0em;
+  padding: 0em;
+  margin-bottom: 1em;
+}
+
+div.boites div.boite p.titre
+{
+  margin: 0em;
+  padding: 0em;
+  background-color: #ffd249;
+  text-align: center;
+  -moz-border-radius-topleft : 0.4em;
+  -moz-border-radius-topright : 0.4em;
+}
+
+div.boites div.boite div.corps
+{
+  border: 2px solid #ffd249;
+  border-top-style: none;
+/*  -moz-border-radius-bottomleft : 0.4em;
+  -moz-border-radius-bottomright : 0.4em;*/
+  padding-left: 0.25em;
+  padding-right: 0.25em;
+  padding-top: 0.3em;
+  margin: 0px;
+}
+
+div.boites div.boite div.corps p
+{
+  margin: 0em;
+  margin-top: 0.1em;
+  margin-bottom: 0.1em;
+  padding:0em;
+}
+
+div.boites div.recherche
+{
+  text-align: center;
+}
+
+div.boites input.text
+{ 
+  width: 9em;
+}
+/* Fin boites */
+
+div.main
+{
+  margin-top: 2em;
+  margin-right: 2em;
+  margin-bottom: 1em;
+  margin-left: 11em;
+  text-align: justify;
+}
+
+
+/* Pied de page */
+
+div.pied
+{
+  margin-left: 2em;
+  margin-right: 2em;
+  clear: both;
+  text-align: center;
+  margin-top: 4em;
+/*  border-top : 1px solid black;*/
+}
+

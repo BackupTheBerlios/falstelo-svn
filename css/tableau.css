@@ -1,0 +1,25 @@
+table.tableau
+{
+	border:2px solid black;
+	width: 95%
+}
+
+table.tableau th, table.tableau td
+{
+	padding-top: 0.5em;
+	padding-bottom: 0.5em;
+	padding-left: 0.5em;
+	padding-right: 0.5em;
+	border-left: 1px solid black;
+	border-right: 1px solid black;
+}
+
+table.tableau td
+{
+	border-bottom: 1px dotted black;
+}
+
+table.tableau thead tr
+{
+	background-color: #94BAE7;
+}

@@ -1,0 +1,47 @@
+<!--
+  - Experimental DTD for rs2xml.inc.php output.
+  - Written by Toyvo Yanski <toyvo@inbox.ru>
+  - Date: 2002-Jul-31
+  -->
+
+<!-- 
+  - HERE FOLLOWS A TYPICAL DOCUMENT CONFORMING TO THIS DTD:
+  -->
+
+<!--
+   <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+   <!DOCTYPE adodb_result_document SYSTEM "rs2xml.dtd">
+   <adodb_result>
+    <field name="person" type="VARCHAR" ado_type="C" max_length="255"/>
+    <field name="idno" type="INT" ado_type="I" max_length="12"/>
+    <row>
+      <e>Peter Swift</e>
+      <e>1523</e>
+    </row>
+    <row>
+      <e>James O&apos;Reilly</e>
+      <e>6421</e>
+    </row>
+    <row>
+      <e>Alan Turing</e>
+      </e>2142</e>
+    </row>
+   </adodb_result>
+  -->
+
+<!--
+  - NOTE: the rs2xml function would return only the element <adodb_result> and
+  -       its children. The <?xml?> and <!DOCTYPE> declarations should be added
+  -       by your script. Also, if you add any attributes to adodb_result, you
+  -       should also include <!ATTLIST> declaration to specify them.
+  -->
+
+<!ELEMENT adodb_result (query, field*, row*)>
+<!ELEMENT query (#PCDATA)>
+<!ELEMENT field (#PCDATA)>
+<!ATTLIST field  name       CDATA                                  #REQUIRED
+                 type       CDATA                                  #REQUIRED
+                 ado_type   ("C"|"X"|"D"|"T"|"L"|"N"|"I"|"R"|"B")  #REQUIRED
+                 max_length CDATA                                  #REQUIRED>
+<!ELEMENT row (e*)>
+<!ELEMENT e (#PCDATA)>

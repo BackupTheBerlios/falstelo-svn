@@ -1,0 +1,47 @@
+! Tout ce qui est dit ici est nécessaire pour la bonne comprehension du fonctionnement du bazar.
+
+!! NOTE : Tous les fichiers sont écris avec les fins de lignes UNIX. Par ailleurs, ce fichier ainsi que certains autres fichiers php (mais pas tous) sont encodées en UNICODE, et d'autre en iso-8859-15. Cela peut poser des problèmes avec les accents dans les commentaires. Prendre garde à utiliser un éditeur qui peut changer l'encodage des caractères pour l'affichage et l'édition des fichiers !!
+
+********** Fonctionnement du port/amélioration du moteur précédement écrit en JAVA pour IN56. **********
+
+Remarque : La librairie php « adodb » est utilisée afin de fournir un couche d'abstraction à la connexion à la base de donnée. Il s'agit du paquet debian "libphp-adodb", et c'est disponible aussi sous windows en téléchargeant sur le site officiel. Cela remplace le Java/JDBC.
+
+Nous utilisons XML et XSLT comme dans le cas du projet IN56 (voir le rapport). Les fichiers XML statiques (qui ne sont pas générés par une requete de base de donnée, ou qui ne contiennent pas d'élements calculés par php - le panier par exemple - sont placés dans le sous repertoire xml. Les fichiers .php servant à la génération de contenu XML dynamique (fonctionnement expliqué plus tard) sont égalements placés dans le sous répertoire XML. S'il existe un fichier page.php, il sera utilsé pour l'appel à page.html et remplacera un éventuel fichier page.xml présent. S'il le fichier page.php n'existe pas, le moteur cherchera un fichier page.xml pour l'afficher. S'il n'existe pas non plus, la page 404.xml sera utilsée à la place.
+
+Pour voir avec le navigateur la page accueil.xml ou accueil.php, il faut demander la page http://..../accueil.html. Une regle de réecriture d'url placée dans le fichier .htacces permet de transférer l'appel à cette page vers la page http://..../index.php?page=accueil. Les arguments php en mode GET qui auraient pu etre demandés via la page (par exemple par http://..../accueil.html?variable1=valeur1&amp;variable2=valeur2 ) sont transférés à index.php sans aucun problemes. La redirection est invisible pour le navigateur, l'url affichée sera toujours http://..../accueil.html. Il est important de paramétrer le .htaccess en fonction du repertoire web dans lequel se trouve le site. Je n'ai pas trouvé comment rendre la règle indépendante de l'emplacement du site par rapport au serveur web.
+
+Par ailleurs, dans le cas où l'url demandée est http://..../, la page index.php prends la valeur par défaut pour la variable $page (ici ce sera "accueil").
+
+*** Dans le cas des pages dynamiques ***
+
+La méthode servir_page() de tprincipal.php va rechercher la présense d'un fichier page.php. S'il ce fichier existe, il est importé et l'objet Tpage qu'il contient sera créé et sa méthode get() appellée. Cette méthode va effectuer les différentes requetes SQL nécessaires à l'extraction des données depuis la base de donnée. Voir le fichier ./xml/produit.php comme exemple. L'idéal serait qu'elle puisse utiliser également des fichiers XML statiques en parallele de données XML nécessaires à la génération de la page, mais cela n'est pas encore prévu. On peut contourner cela en appeller un fichier xml externe via la feuille de style xslt, mais ce n'est pas idéal.
+
+Il est a noter que le fichier page.php peut également se contenter de demander l'affichage d'une page xml statique. Voir le contenu de ./xml/categorie.php par exemple.
+
+La classe Tprincipal s'occupe de créer l'objet Ttransformation afin d'effectuer le passage XML + XSLT en HTML.
+
+*** Classe Tprincipal ***
+
+Lorque la méthode servir_page() est appellée elle va :
+- rechercher la présence d'un fichier ./xml/$page.php.
+	- Il existe. L'objet T$page est créé, et sa méthode get() est appellée
+	- Il n'existe pas, la présence de ./xml/$page.xml est recherchée
+		- Il n'existe pas. La page choisie est donc la page 404, qui est ici statique.
+		- Il existe. L'objet générique Ttransformation est créé, et son attribut fichier_xml est attribué à la page appellée. Le fichier .xml est ouvert afin d'extraire le nom de la feuille de style utilisée par ce fichier xml, situé dans l'entete du fichier, en tant que processing-instruction xml-stylesheet. Le nom de cette feuille de style est extrait, et affecté à l'attribut fichier_xslt de l'objet ttransformation. Dans l'éventualité ou le nom du fichier xslt n'est pas présent dans le fichier xml, ou si le fichier spécifié n'existe pas, le fichier xml brut est affiché. C'est également le cas si la variable $voir_xml est mise à "true" (par méthode GET : http://..../page.html?voir_xml=true. Cela fonctionne aussi pour les pages dynamiques. Par ailleurs, comme les fichier xml statiques contiennent une processing instruction spécifiant la feuille de style xslt à utiliser, certains navigateurs sont en mesure de faire la transformation eux mêmes (Mozilla et IE6). C'est d'ailleurs à cause de cela qu'il existe un lien symbolique de ./xslt vers ./xml/xslt afin que le navigateur soit en mesure de trouver la feuille de style à partir du répertoire de base duquel sont servis toutes les pages.
+		
+D'ailleurs, le comportement de php vis à vis des chemins de recherche des fichiers qui se fait à partir du premier fichier appellé, et non par rapport au chemins relatifs des fichiers inclus, est assez étrange.
+		
+*** Classes T****.php du répertoire ./xml/ ***
+
+Ce sont des spécialisations de la classe Ttransformation. Elle en héritent. Il suffit de surcharger la méthode get(), utilisée dans Ttransformation dans le cas des pages statiques afin d'appeller la méthode transformer().
+Elle se doit de donner une valeur à l'attribut fichier_xslt (sinon le résultat xml sera affiché) et donner soit une liste de requete, soit un nom de fichier xml statique.
+
+*** Classe Ttransformation ***
+
+Elle effectue les opérations suivantes :
+- dans le cas d'un fichier xml statique, elle regarde si un fichier cache, contenant déja le html demandé existe. Elle vérifie si ce fichier html a une date de modification plus récente que le fichier xml et xslt. Dans ce cas, le fichier html de cache est simplement affiché. Sinon, la transformation xml/xslt=>html est effectué, et le résultat est enregistré dans le fichier cache (situé dans le repertoire ./cache/xml
+- dans le cas d'un fichier xml généré dynamiquement, la classe va transformer la liste de requete en XML via la librairie rs2xml (./lib/rs2xml/), et enfin transformer la chaine xml ainsi générée en html via la feuille de style qui est spécifiée.
+
+*** Classe Tsession ***
+
+Classe en cours d'écriture, afin d'utiliser les sessions php pour le stoquage des informations concernant le caddie et tout ça. Je n'ai pas encore regardé comment je vais implémenter cela.

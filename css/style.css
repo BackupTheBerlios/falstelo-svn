@@ -1,0 +1,70 @@
+html, body, img, table, tr, td
+{
+  margin: 0px;
+  padding: 0px;
+}
+
+table
+{
+  empty-cells:show;
+}
+
+td
+{
+  background-color:red;
+  vertical-align: top;
+}
+
+acronym
+{
+  font-style: italic;
+}
+
+div.spacer
+{
+  clear: both;
+}
+
+div.entete
+{
+  border: 1px solid yellow;
+  height: 100px;
+}
+
+div.entete div.logo
+{
+  float: left;
+  border: 1px solid red;
+}
+
+div.gauche
+{
+  float: left;
+  border: 1px solid black;
+  width: 10em;
+  position: absolute;
+  bottom: 0;
+  top: 100px;
+}
+
+div.contenu
+{
+  margin-left: 11em;
+  
+}
+
+div.produit
+{
+  border: 1px solid black;
+  
+}
+
+div.produit h1.nom
+{
+  text-decoration: underline;
+}
+
+div.produit p.prix
+{
+  font-style: italic;
+}
