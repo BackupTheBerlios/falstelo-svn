@@ -1,14 +1,16 @@
 <?xml version='1.0' encoding='UTF-8'?>
+<?xml-stylesheet href="../xslt/common.xsl" type="text/xsl"?>
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <title>Documentation de PHP Falstelo</title>
+    <link rel="stylesheet" type="text/css" href="common.css"/>
     <meta name="DC.Author" content="Nicolas Bouillon"/>
     <meta name="Date" content="Mai 2004"/>
   </head>
   <body>
     <h1>Présentation</h1>
 
-    <p>Falstelo propose de faciliter la création d'un site web basé sur XSLT. Le but est de pouvoir générer des pages de manière simple, en ne spécifiant que le strict minimum : requètes SQL à exécuter, fichiers XML statiques à utiliser, feuille de style XSLT appliquée. Mais cependant, \falstelo{} doit également pouvoir permettre d'ajouter des fonctionnalités supplémentaires sans difficultés, tout en restant très simple. En effet, \falstelo{} fait un peut moins de 600 lignes, réparties principalement dans deux classes.</p>
+    <p>Falstelo propose de faciliter la création d'un site web basé sur XSLT. Le but est de pouvoir générer des pages de manière simple, en ne spécifiant que le strict minimum : requètes SQL à exécuter, fichiers XML statiques à utiliser, feuille de style XSLT appliquée. Mais cependant, PHP Falstelo doit également pouvoir permettre d'ajouter des fonctionnalités supplémentaires sans difficultés, tout en restant très simple. En effet, PHP Falstelo fait un peut moins de 600 lignes, réparties principalement dans deux classes.</p>
 
     <h1>Prérequis</h1>
 
@@ -21,22 +23,23 @@
       <li>le support des transformations par PHP, soit via Sablotron, soit via libxslt.</li>
     </ol>
     
-Installation}
+    <h1>Installation</h1>
 
-\subsection{Version stable}
+    <h2>Version stable</h2>
 
-\subsection{Version de développement}
+    <h2>Version de développement</h2>
 
-\subsection{Mise en place et configuration}
+    <h2>Mise en place et configuration</h2>
 
-\section{Utilisation simple}
+    <h1>Utilisation simple</h1>
 
-\subsection{Pages statiques}
+    <h2>Pages statiques</h2>
 
-\subsection{Pages dynamiques}
+    <h2>Pages dynamiques</h2>
 
-\section{Utilsation avancée : personnalisation}
+    <h1>Utilsation avancée : personnalisation</h1>
 
-Créer un fichier \texttt{tusrtransformation.php}.
+    Créer un fichier <tt>tusrtransformation.php</tt>.
 
-\end{document}
+  </body>
+</html>
