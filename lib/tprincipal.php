@@ -60,7 +60,7 @@ class Tprincipal
 		{
 		  // le fichier .php existe, on l'utilise alors (cas des pages dynamiques, avec accès à la bdd)
 		  require_once($page . ".php");
-		  $nom_classe = "T" . $page;
+		  $nom_classe = "T" . basename($page);
 		  $iTransformation = new ${nom_classe}($page, $page_demandee);
 		}
 	 else
