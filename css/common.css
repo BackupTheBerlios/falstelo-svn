@@ -173,6 +173,13 @@ div.onglets ul.liens li
 
 }
 
+div.ongletsbas ul.liens li
+{
+  display: block;
+  float: right;
+  margin-left: 0.4em;
+}
+
 div.onglets ul.liens li a
 {
 
@@ -181,6 +188,15 @@ div.onglets ul.liens li a
 
   padding-left: 1.5em;
   padding-right: 1.5em;
+}
+
+div.ongletsbas ul.liens li a
+{ 
+  
+  -moz-border-radius-topleft: 0;
+  -moz-border-radius-topright: 0;
+  -moz-border-radius-bottomleft: 1.1em;
+  -moz-border-radius-bottomright: 1.1em;
 }
 
 div.onglets ul.liens li.selected a
@@ -296,6 +312,7 @@ div.main
 
 div.pied
 {
+  color: white;
   margin-left: 2em;
   margin-right: 2em;
   clear: both;

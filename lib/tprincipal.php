@@ -59,9 +59,16 @@ class Tprincipal
 	      header ("HTTP/1.x 404 Not Found");
 	      $page = "404";
 	    }
-			
-	  require("lib/ttransformation.php");
-	  $nom_classe = "Ttransformation";
+		
+	  // On teste pour voir si l'utilisateur a surchargé lui meme la classe TTransformation
+	  if (file_exists("usrlib/tusrtransformation.php")){
+	    require("usrlib/tusrtransformation.php");
+	    $nom_classe = "Tusrtransformation";
+	  }
+	  else {
+	    require("lib/ttransformation.php");
+	    $nom_classe = "Ttransformation";
+	  }
 	  $iTransformation = new ${nom_classe}();
 
 	  // recherche le nom de la feuille de style
@@ -89,9 +96,9 @@ class Tprincipal
 
       //Ajoute le temps de génération en fin de page. Je ne suis pas sur de la fiabilité du résultat donné...
       $arrive = gettimeofday();
-      print "<!--\n";
+      print "<!--";
       $temps_total = ($arrive[usec] - $depart[usec]) / 1000 / 1000;
-      print "Page produite en ". $temps_total ." secondes\n";
+      print "Page produite en ". $temps_total ." secondes";
       print "-->\n";
     }
 }

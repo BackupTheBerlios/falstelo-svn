@@ -6,9 +6,18 @@
  */
 
 require("adodb.inc.php");
-require("variables.php");
+
+if (file_exists("usrlib/variables.php"))
+{
+  require("usrlib/variables.php");
+}
+else
+{
+  require("variables.php");
+}
+
 require("rs2xml/rs2xml.inc.php");
-require("tsession.php");
+
 
 class Ttransformation
 {
@@ -17,27 +26,19 @@ class Ttransformation
   var $xslt_path = "";
   var $peut_etre_en_cache = true;
   var $voir_xml = false;
+  var $type_mime = "text/html";
 
   var $requetes_sql = array();
   var $fichiers_xml = array();
+  var $array_nodexml = array();
   var $fichier_xslt = null;
-
+  var $xslt_params = array();
+  
   var $USE_SABLOTRON = true;
 
-  var $iSession = null;
-	
   function Ttransformation() //constructeur
   {
-    session_start();// TODO: restreindre le path d'action du cookie. (par défaut "/"... pas top)
-    if ($_SESSION['isession'] == null)
-      {
-	$this->iSession = new Tsession();
-	$_SESSION['isession'] = &$this->iSession;
-      }
-    else
-      {
-	$this->iSession = &$_SESSION['isession']; 
-      }
+
   }
 
   function get()
@@ -75,12 +76,13 @@ class Ttransformation
     $fichier_xslt = $this->xslt_path . $this->fichier_xslt;
     $html = "";
 
-    $nodexml_session = $this->session_vers_xml();
-    $nodexml_categories = $this->categories_vers_xml();
+    //$nodexml_session = $this->session_vers_xml();
+    //$nodexml_categories = $this->categories_vers_xml();
     $nodexml_fichiers = $this->fichiers_vers_xml($this->fichiers_xml);
     $nodexml_sql = $this->sql_vers_xml($this->requetes_sql);
-    $array_nodexml = array($nodexml_session, $nodexml_categories, $nodexml_fichiers, $nodexml_sql);
-    $domxml = $this->agreger_xml($array_nodexml);
+    array_push($this->array_nodexml, $nodexml_fichiers);
+    array_push($this->array_nodexml, $nodexml_sql);
+    $domxml = $this->agreger_xml($this->array_nodexml);
     if ( $this->voir_xml != true ){
       $html = $this->xml_vers_html($domxml, $fichier_xslt);
     }
@@ -132,60 +134,6 @@ class Ttransformation
     return $domxml->document_element();
   }
 
-  function session_vers_xml(){
-    $dom = domxml_new_doc("1.0");
-    $session = $dom->create_element("session");
-    $dom->append_child($session);
-    if ( $this->iSession->login != null){
-      $session->set_attribute("login", $this->iSession->login);
-    }
-    $panier = $dom->create_element("panier");
-    foreach($this->iSession->panier as $id => $quantite){
-      $produit = $dom->create_element("produit");
-      $produit->set_attribute("id", $id);
-      $produit->set_attribute("quantite", $quantite);
-      //todo: faire une requete SQL pour extraire le prix de l'article
-      $panier->append_child($produit);
-    }
-    $session->append_child($panier);
-    //$xml = $dom->dump_mem(true, "UTF-8");
-    return $session;
-  }
-	
-  function categories_vers_xml(){
-    $dbhost = $GLOBALS["dbhost"];
-    $dbname = $GLOBALS["dbname"];
-    $dbuser = $GLOBALS["dbuser"];
-    $dbpass = $GLOBALS["dbpass"];
-    $dbtype = $GLOBALS["dbtype"];  
-    $db = &ADONewConnection($dbtype); // create a connection
-    $connexion_result = $db->PConnect($dbhost,$dbuser,$dbpass,$dbname); // Connexion à la base
-    $xml = "<"."?"."xml version='1.0' encoding='UTF-8' ?".">\n";
-    if ($connexion_result == false)
-      {
-	$xml .= "<erreur>Erreur de connexion à la base de donnée</erreur>";
-      }  
-    else
-      {
-	$lang = $this->iSession->lang;
-	$requete = "SELECT categorie_id, titre.ressource_texte, descr.ressource_texte FROM (categorie INNER JOIN ressource as titre ON categorie_titre = titre.ressource_id) INNER JOIN ressource as descr ON descr.ressource_id = categorie_description WHERE titre.ressource_langue_code = '$lang' AND descr.ressource_langue_code = '$lang'";
-	$recordset = $db->Execute($requete);
-	$xml .= "<categories>";
-	    
-	if ( $recordset == false )
-	  {
-	    $xml.= "<erreur>" .  $db->ErrorMsg() . " ($requete)</erreur>";
-	  }
-	else
-	  {
-	    $xml .= rs2xml($recordset,'');
-	  }
-	$xml .= "</categories>\n";
-      }
-    $domxml = domxml_open_mem($xml);
-    return $domxml->document_element();
-  }
-
   function fichiers_vers_xml($array_fichiers){
     $dom_all = domxml_new_doc("1.0");
     $root_all = $dom_all->create_element("fichiers");
@@ -221,7 +169,7 @@ class Ttransformation
       $xml = $domxml->dump_mem(true,"UTF-8");
       $arguments = array('/_xml' => $xml);
       $xp = xslt_create();
-      $result = xslt_process($xp, 'arg:/_xml', $fichier_xslt, NULL, $arguments);
+      $result = xslt_process($xp, 'arg:/_xml', $fichier_xslt, NULL, $arguments, $this->xslt_params);
       xslt_free($xp);
       return $result;
     }

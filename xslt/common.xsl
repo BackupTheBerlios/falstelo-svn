@@ -113,12 +113,27 @@
 	      </xsl:call-template>
 	    </ul>
 	  </div>
+
+
+	  
 	  <div class="contenu">
 	    <xsl:if test="$Message != ''">
 	      <p class="message"><xsl:value-of select="$Message"/></p>
 	    </xsl:if>
 	    <xsl:apply-templates select="page/fichiers | pages/requetes"/>
 	  </div>
+
+	  <div class="onglets ongletsbas">
+	    <ul class="liens">
+	      <li class="unselected">
+		<a href="">FR</a>
+	      </li>
+	      <li class="selected">
+		<a href="">EO</a>
+	      </li>
+	    </ul>
+	  </div>
+
 	</div>
 
 	<!-- Pied de page -->
@@ -128,9 +143,7 @@
 	
       </body>
     </html>
-    <xsl:comment>
-      Généré par le processeur xslt de <xsl:value-of select="system-property('xsl:vendor')"/> (<xsl:value-of select="system-property('xsl:vendor-url')"/>), supportant XSLT version <xsl:value-of select="system-property('xsl:version')"/>
-    </xsl:comment>
+    <xsl:comment>Généré par le processeur xslt de <xsl:value-of select="system-property('xsl:vendor')"/> (<xsl:value-of select="system-property('xsl:vendor-url')"/>), supportant XSLT version <xsl:value-of select="system-property('xsl:version')"/></xsl:comment>
   </xsl:template>
 
   <xsl:template match="page/session/panier">
