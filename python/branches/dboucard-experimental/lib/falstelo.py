@@ -1,10 +1,10 @@
 # -*- coding: UTF-8 -*-
 
 from mod_python import apache
-import os, sys, sre, imp
+import os, sys, sre, imp, string
 import libxml2
 import traceback
-import configuration
+import ConfigParser
 
 # mod_python handler
 def handler(req):
@@ -14,20 +14,23 @@ def handler(req):
 	if slash != -1:
 		fichier = req.filename[slash+1:-5]
 		rep = req.filename[:slash]
-	#return error(req,"rep="+rep+"\nfichier="+fichier)
 	try:
 		importation = imp.find_module(fichier, [rep,])
  		module = imp.load_module("dynamicpage", importation[0], importation[1], importation[2])
 	except:
-		t = Ttransformation(req)
+		raise
+		t = Ttransformation(req,conf)
 	else:
-		t = eval("module.T"+fichier+"(req)")
-
-	#return error(req,str(t))
+		t = eval("module.T"+fichier+"(req,conf)")
 	t.proceder()
+	if t.codeRetour == apache.HTTP_NOT_FOUND and conf.has_option("Speciaux","nomPage404"):
+		# Recherche d'une page 404 personnalis�e
+		t = Ttransformation(req, conf, conf.get("Speciaux","nomPage404"))
+		t.proceder()
 	req.content_type = t.typeMime
-	req.write(t.resultat)
+	t.envoyer()
 	return t.codeRetour
+
 
 def error(req,message):
 	req.content_type = "text/html"
@@ -38,46 +41,46 @@ def error(req,message):
 
 
 class Ttransformation:
-	def __init__(self, req):
-		#f = open("/tmp/falstelo.log","w")
+	def __init__(self, req, config, redirect=None):
+		self.requete = req
+		self.conf = config
+		self.typeMime = self.conf.get("Prefs","typeMime")
 
-		self.requeteApache = req
-		self.typeMime = configuration.typeMime
-		#le fichier demandé est forcement un .html
-		#on lui ote donc ce ".html" final
-		self.fichierDemande = self.requeteApache.filename[0:len(self.requeteApache.filename)-5]
 		#on extrait du fichier demandé le repertoire dans lequel on travaille (le lien vers la feuille de style XSLT sera en fonction de ce repertoire
-		#f.write("URI="+req.uri+"\nUnparsed URI="+req.unparsed_uri+"\nFilename="+req.filename+"\nrepertoireTravail="+sre.match("(/.*/)", req.filename).group(0)+"\n")
-		#f.close()
 		self.repertoireTravail = sre.match("(/.*/)", req.filename).group(0)
-
-		self.typeMime = "text/html"
+		
+		if redirect==None:
+			#le fichier demandé est forcement un .html
+			#on lui ote donc ce ".html" final
+			self.fichierDemande = self.requete.filename[0:len(self.requete.filename)-5]
+		else:
+			self.fichierDemande = self.repertoireTravail + redirect
+		
 		self.codeRetour = apache.OK
+		self.stream = False
 		self.fichiersXML = []
 		self.noeudsXML = []
 		self.requetesSQL = []
 		self.fichierXSLT = None
-		self.resultat = ""
+		self._resultat = []
 		return
 
 	def proceder(self):
-	
 		#on teste tout d'abord si le fichier existe demandé vraiement et est lisible
 		if (os.access(self.fichierDemande + ".html", os.R_OK) == True):
 			#Fichier existe... il faut le retourner directement
-			self.resultat += self.retournerContenuFichierExistant(self.fichierDemande + ".html")
+			self.ecrire(self.retournerContenuFichierExistant(self.fichierDemande + ".html"))
 			self.typeMime = "text/html"
 			self.codeRetour = apache.OK
 			return
 
 		elif (os.access(self.fichierDemande + ".xml", os.R_OK) == True):
 			#si le fichier html existe pas, alors on regarde s'il existe un fichier xml
-			#self.resultat += "Le fichier %s existe..." % (self.fichierDemande + ".xml")
 			# le fichier XML existe, on extrait le nom de sa feuille de style
 			fichierXSLT = self. __extraireNomFeuilleStyle(self.fichierDemande + ".xml")
 			if fichierXSLT == None:
 				#aucune feuille de style, alors on ressort le fichier XML directement
-				self.resultat += self.retournerContenuFichierExistant(self.fichierDemande + ".xml")
+				self.ecrire(self.retournerContenuFichierExistant(self.fichierDemande + ".xml"))
 				self.typeMime = "text/xml"
 				self.codeRetour = apache.OK
 				return
@@ -89,33 +92,20 @@ class Ttransformation:
 				self.fichiersXML = self.fichiersXML + [self.fichierDemande + ".xml"]
 				self.fichierXSLT = self.repertoireTravail + fichierXSLT
 				#et effectuer la transformation, comme si ton avait des fichiers multiples et des requetes
-				self.resultat += self.effectuerTransformation()
+				self.ecrire(self.effectuerTransformation())
 				self.typeMime = "text/xml"
 				self.codeRetour = apache.OK
 				return
 					
 			else:
-				self.resultat += "Errreur, fichier %s inexistant" % (self.repertoireTravail  + fichierXSLT)
+				self.ecrire("Erreur, fichier %s inexistant" % (self.repertoireTravail  + fichierXSLT))
 				self.typeMime = "text/plain"
 				self.codeRetour = apache.OK
 				return
 			
-		elif os.access(self.fichierDemande + ".py", os.R_OK) == True :
-			#sinon (le fichier XML n'existe pas), alors on tente un dernier essai avec un fichier py, que l'on importe...
-			self.resultat += "On a trouvé un fichier python... Ce travail reste à faire... : " + self.fichierDemande
-## 			fname = self.fichierDemande
-## 			slash = self.fichierDemande.rfind('/')
-## 			if slash != -1:
-## 				fname = self.fichierDemande[slash+1:]
-## 			importation = imp.find_module(fname, [self.repertoireTravail,])
-## 			module = imp.load_module("dynamicpage", importation[0], importation[1], importation[2])
-## 			classe = getattr(module, "T"+fname)
-## 			objet = new.instance(classe)
-## 			objet.__init__(self.requeteApache)
-## 			objet.proceder()
-## 			self.resultat += objet.resultat
-			self.typeMime = "text/plain"
-			self.codeRetour = apache.OK
+		else:
+			#sinon (le fichier XML n'existe pas), alors ont retourne l'erreur 404
+			self.codeRetour = apache.HTTP_NOT_FOUND
 			return
 
 	def retournerContenuFichierExistant(self, fichier):
@@ -170,3 +160,22 @@ class Ttransformation:
 			return match.group(1);
 		else:
 			return None
+
+	def ecrire(self, str):
+		if self.stream:
+			self.requete.write(str+"\n")
+		else:
+			self._resultat.append(str)
+
+	def envoyer(self):
+		if not self.stream:
+			self.requete.write(string.join(self._resultat, "\n"))
+	
+
+
+#=- Module initialisation -=#
+global conf
+conf = ConfigParser.ConfigParser()
+fichConf = __file__[:-2] + "conf"
+conf.read(fichConf)
+
