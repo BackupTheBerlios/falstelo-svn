@@ -116,8 +116,7 @@ class Ttransformation{
       }
     
     if (sizeof($requetes)>0){
-
-      
+ 
       $db = &ADONewConnection($dbtype); // create a connection
       $connexion_result = $db->PConnect($dbhost,$dbuser,$dbpass,$dbname); // Connexion à la base
       
