@@ -32,6 +32,7 @@ class Ttransformation{
   var $fichiers_xml = array();
   var $array_nodexml = array();
   var $fichier_xslt = null;
+  var $fichier_xslt_relativetodir = null;
   var $xslt_params = array();
   
   
@@ -192,6 +193,14 @@ Prends tous les nodes XML du tableau, et les place dans un seul document XML
   */
   function agreger_xml($array_nodexml){
     $dom = domxml_new_doc("1.0");
+    if ($this->fichier_xslt_relativetodir != null){
+      $fich_xslt = $this->fichier_xslt_relativetodir;
+    }
+    else{
+      $fich_xslt = $this->fichier_xslt;
+    }
+    $pi = $dom->create_processing_instruction('xsl-stylesheet','href="' . $fich_xslt . '" type="text/xsl" ');
+    $dom->append_child($pi);
     $root = $dom->create_element("page");
     foreach($array_nodexml as $key=>$node){
       if ($node != null){

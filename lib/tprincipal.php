@@ -107,10 +107,11 @@ Pour servir la page "page_demandee" de maniere normale
 
 	// recherche le nom de la feuille de style
 	$fichiers_xml = array($page.".xml");
-	if ($voir_xml == false)
-	  {
+	//if ($voir_xml == false)
+	//  {
 	    $xml_path = dirname($fichiers_xml[0]);
-	    $fichier_xslt = $xml_path . "/" . $this->extract_stylesheet_filename($fichiers_xml[0]);  // le nom de fichier de la feuille de style est relatif au chemin du fichier xml.
+	    $fichier_xslt_relativetodir = $this->extract_stylesheet_filename($fichiers_xml[0]);  // le nom de fichier de la feuille de style est relati\f au chemin du fichier xml.
+	    $fichier_xslt = $xml_path . "/" . $fichier_xslt_relativetodir;
 	    if (!file_exists($fichier_xslt) || filetype($fichier_xslt) != "file")
 	      {
 		$iTransformation->fichier_xslt = null;
@@ -119,8 +120,9 @@ Pour servir la page "page_demandee" de maniere normale
 	      {
 		$iTransformation->fichier_xslt = $fichier_xslt; 
 	      }
-	  }
+	    // }
 	$iTransformation->fichiers_xml = $fichiers_xml;
+	$iTransformation->fichier_xslt_relativetodir = $fichier_xslt_relativetodir;
       }
 
     $iTransformation->voir_xml = $voir_xml;
