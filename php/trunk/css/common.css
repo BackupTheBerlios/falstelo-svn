@@ -2,7 +2,7 @@
 
 /*
 
-  Bleu foncé : #ffd249
+  Bleu foncÃ©: #ffd249
   Orange : #4154a3
   Couleur de fond des formulaires:      #EEEEEE;
 */
@@ -17,16 +17,6 @@
   border: 1px solid black;
 }
 
-body
-{ 
-  background-attachment : fixed;
-  background-image: url("../img/fond.jpg");
-  background-repeat: no-repeat;
-  background-color: black;
-  background-position: bottom right;
-
-}
-
 html, body
 {
   font-family: sans-serif;
@@ -35,14 +25,32 @@ html, body
   padding-bottom: 20px;
 }
 
-div.contenu
-{ 
-  border: 2px solid #ffd249;
-  padding: 1em;
-  -moz-border-radius: 1em;
-  min-height: 25em;
-/*  -moz-opacity: 0.8;*/
-  background-color: white;
+@media screen
+{
+  body
+  { 
+    background-attachment : fixed;
+    background-image: url("../img/fond.jpg");
+    background-repeat: no-repeat;
+    background-color: black;
+    background-position: bottom right;
+  
+  }
+  
+  div.contenu
+  { 
+    border: 2px solid #ffd249;
+    padding: 1em;
+    -moz-border-radius: 1em;
+    min-height: 25em;
+    background-color: white;
+  }
+
+  div#contenu pre
+  {
+    overflow: auto;
+    border: 1px dotted black;
+  }
 }
 
 div.contenu p.message
@@ -194,7 +202,7 @@ div.main
 
 /* Pied de page */
 
-div.pied
+div#pied
 {
   color: white;
   margin-left: 2em;
@@ -218,6 +226,6 @@ div.pied
   }
   div.contenu
   {
-	border: none;
+  	border: none;
   }
 }

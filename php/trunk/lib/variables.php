@@ -41,7 +41,7 @@ Chemin de base pour les fichiers XSLT
 $GLOBALS["XSLT_PATH"] = "";
 
 /*
-Est ce que par défaut, on affiche le fichier XML tel que plutot que de faire la transformation XSLT
+Est ce que par défaut, on affiche le fichier XML tel quel plutot que de faire la transformation XSLT
 */
 $GLOBALS["VOIR_XML"] = false;
 
@@ -64,7 +64,8 @@ $GLOBALS["dbname"] = "database_name";
 $GLOBALS["dbuser"] = "database_user";
 $GLOBALS["dbpass"] = "database_password";
 $GLOBALS["dbtype"] = "database_type"; // "mysql", "postgres", "oracle"...
-$GLOBALS["dbencoding"] = "UTF-8";
+$GLOBALS["dbencoding"] = "UTF-8"; // la table de caractère utilisée dans la base
+
 
 /*
 Locale pour les chiffres et tout ça. 

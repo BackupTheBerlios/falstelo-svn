@@ -14,14 +14,24 @@ require_once("lib/tprincipal.php");
 global $HTTP_GET_VARS;
 if ( ! $HTTP_GET_VARS['page'])
 {
-	$page = "accueil";
+  $page_demandee = "accueil";
 }
 else
 {
-	$page = $HTTP_GET_VARS['page'];
+  $page_demandee = $HTTP_GET_VARS['page'];
 }
 
 $iPrincipal = new Tprincipal();
-$iPrincipal->servir_page($page);
+
+if ($HTTP_GET_VARS['erreur'])
+{
+  $iPrincipal->servir_page_erreur($page_demandee, $HTTP_GET_VARS['erreur']);
+}
+else
+{
+  $iPrincipal->servir_page($page_demandee);
+}
+
+
 
 ?>

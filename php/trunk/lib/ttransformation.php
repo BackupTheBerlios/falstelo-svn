@@ -60,6 +60,12 @@ class Ttransformation{
   var $xslt_params = array();
   
   /**
+  Chemin relatif de la page appellée par rapport à la racine du site
+  */
+  var $chemin_relatif = "./";
+  
+  
+  /**
   Valeurs par défaut qui seront  écrasées par lib/variables.php et usrlib/variables.php.
   Voir lib/variables.php pour la signification des ces variables.
   */
@@ -87,7 +93,7 @@ class Ttransformation{
   /**
   Constructeur de l'objet.
   */
-  function Ttransformation($page, $page_demandee)
+  function Ttransformation($page_affichee, $page_demandee)
   {
     // récupération des préférences de l'utilsateur
     global $GLOBALS;
@@ -107,36 +113,79 @@ class Ttransformation{
     $this->db_type = $GLOBALS["dbtype"];
     $this->db_encoding = $GLOBALS["dbencoding"];
 
-    $this->page = $page;
+    $this->page_affichee = $page_affichee;
     $this->page_demandee = $page_demandee;
+    
+    $this->xslt_params['dbencoding'] = $this->db_encoding;
   }
 
+  
+  function __extract_processing_instruction(&$dom)
+  {
+    $xpth = $dom->xpath_new_context();
+    $pis = $xpth->xpath_eval("//self::processing-instruction()");
+    return $pis;
+  }
+
+  function __extract_stylesheet_filename($fichier_xml)
+  {
+    // ! Le fichier xml ne doit avoir qu'une seule processing instruction
+    $dom = domxml_open_file(getcwd() . "/" . $fichier_xml);
+    $pis = $this->__extract_processing_instruction($dom);
+    $node = $pis->nodeset[0];
+    if ( $node != null)
+    {
+      preg_match("/href=['\"](.+?)['\"]/", $node->data(), $match);
+      return $match[1];
+    }
+    else
+    {
+      return null;
+    }
+  }
+  
   /**
-  Retourne la page demandée, ou bien la page d'erreur $page_erreur si la page n'existe pas. Accessoirement prends le fichier tu cache s'il existe et s'il n'est pas expiré, sinon écrit le fichier résultat dans le cache.
+  Retourne la page demandée, ou bien la page d'erreur $page_erreur si la page n'existe pas. Accessoirement prends le fichier du cache s'il existe et s'il n'est pas expiré, sinon écrit le fichier résultat dans le cache.
   @returns String contenant le code à afficher.
   */
   function get()
   {
-    $fichier_cache = $this->cache_path . $this->page . ".html";
-    if (file_exists($fichier_cache) && (filemtime($fichier_cache) + $this->temps_cache > time()) && filemtime($fichier_cache) > filemtime($this->fichier_xslt)){
+    $this->xslt_params["chemin_relatif"] = $this->chemin_relatif;
+    if (($this->simple_html == true) && ($voir_xml == false))
+    {
+      // recherche le nom de la feuille de style
+      $fichier_xslt_relativetodir = $this->__extract_stylesheet_filename($this->fichiers_xml[0]);  // le nom de fichier de la feuille de style est relati\f au chemin du fichier xml.
+      $this->fichier_xslt = dirname($this->fichiers_xml[0]) . "/" .  $fichier_xslt_relativetodir;
+      if (!file_exists($this->fichier_xslt) || filetype($this->fichier_xslt) != "file")
+      {
+        $this->fichier_xslt = null;
+      }
+    }
+    $fichier_cache = $this->cache_path . $this->page_affichee . ".html";
+    if (file_exists($fichier_cache) && (filemtime($fichier_cache) + $this->temps_cache > time()) && filemtime($fichier_cache) > filemtime($this->fichier_xslt))
+    {
       // on utilise la version qui vient du cache
       return file_get_contents($fichier_cache);
     }
-    else{
+    else
+    {
       // on genere la page
       $html = $this->transformer();
       
       // si temps_cache > 0, alors on écrit le fichier dans le cache.
-      if ( $this->temps_cache > 0){
-	//on verifie d'abord si le repertoire d'accueil existe. Sinon on le cree.
-	if ( ! file_exists(dirname($fichier_cache)) ){
-	  mkdir(dirname($fichier_cache), umask(), true);
-	}
-	$fp = @fopen ($fichier_cache, "w");
-	if ($fp){
-	  fputs ($fp, $html . "<!--Fichier extrait du cache (" . date("r", time())   . ")-->\n");
-	  fclose ($fp);
-	}
+      if ( $this->temps_cache > 0)
+      {
+        //on verifie d'abord si le repertoire d'accueil existe. Sinon on le cree.
+        if ( ! file_exists(dirname($fichier_cache)) )
+        {
+          mkdir(dirname($fichier_cache), umask(), true);
+        }
+        $fp = @fopen ($fichier_cache, "w");
+        if ($fp)
+        {
+          fputs ($fp, $html . "<!--Fichier extrait du cache (" . date("r", time())   . ")-->\n");
+          fclose ($fp);
+        }
       }
       return $html;
     }
@@ -183,8 +232,8 @@ Transforme la liste des requetes SQL en un ensemble de noeuds XML contenant le r
   {
     if ( ! is_array($requetes) )
       {
-	return null;//"<erreur>Erreur, l'argument $sql n'est pas un tableau</erreur>";
-	//exit;
+  return null;//"<erreur>Erreur, l'argument $sql n'est pas un tableau</erreur>";
+  //exit;
       }
     
     if (sizeof($requetes)>0){
@@ -193,32 +242,32 @@ Transforme la liste des requetes SQL en un ensemble de noeuds XML contenant le r
       $connexion_result = $db->PConnect($this->db_host, $this->db_user, $this->db_pass, $this->db_name); // Connexion à la base
       
       if ($connexion_result == false)
-	{
-	  $xml = "<"."?"."xml version='1.0' encoding='UTF-8' ?".">\n";
-	  $xml .= "<erreur>Erreur de connexion à la base de donnée</erreur>";
-	}
+  {
+    $xml = "<"."?"."xml version='1.0' encoding='UTF-8' ?".">\n";
+    $xml .= "<erreur>Erreur de connexion à la base de donnée</erreur>";
+  }
       else
-	{
-	  $xml = "<"."?"."xml version='1.0' encoding='$this->db_encoding' ?".">\n";
-	  $xml .= "<requetes>";
-	  foreach($requetes as $key => $sql)
-	    {
-	      $champs_xml = $this->requetes_sql_champs_xml[$key];
-	      if ($champs_xml == null){
-		$champs_xml = array();
-	      }
-	      $recordset = $db->Execute($sql);
-	      if ( $recordset == false )
-		{
-		  $xml .= "<erreur>" .  $db->ErrorMsg() . " ($sql)</erreur>";
-		}
-	      else
-		{
-		  $xml .= rs2xml($recordset,'', array("key" => "$key"), $champs_xml);
-		}
-	    }
-	  $xml .= "</requetes>\n";
-	}
+  {
+    $xml = "<"."?"."xml version='1.0' encoding='$this->db_encoding' ?".">\n";
+    $xml .= "<requetes>";
+    foreach($requetes as $key => $sql)
+      {
+        $champs_xml = $this->requetes_sql_champs_xml[$key];
+        if ($champs_xml == null){
+    $champs_xml = array();
+        }
+        $recordset = $db->Execute($sql);
+        if ( $recordset == false )
+    {
+      $xml .= "<erreur>" .  $db->ErrorMsg() . " ($sql)</erreur>";
+    }
+        else
+    {
+      $xml .= rs2xml($recordset,'', array("key" => "$key"), $champs_xml);
+    }
+      }
+    $xml .= "</requetes>\n";
+  }
       $domxml = domxml_open_mem($xml);
       return $domxml->document_element();
     }
@@ -235,7 +284,7 @@ Ouvre tous les fichiers XML données et les retourne en tant que noeud XML
     $root_all = $dom_all->create_element("fichiers");
 
     foreach($array_fichiers as $key => $fichier_xml){
-      $dom = domxml_open_file($fichier_xml);
+      $dom = domxml_open_file(getcwd() . "/" . $fichier_xml);
       $root = $dom->document_element();
       $root_all->append_child($root->clone_node(true));
     }
@@ -251,7 +300,7 @@ Prends tous les nodes XML du tableau, et les place dans un seul document XML
     $root = $dom->create_element("page");
     foreach($array_nodexml as $key=>$node){
       if ($node != null){
-	$root->append_child($node->clone_node(true));
+  $root->append_child($node->clone_node(true));
       }
     }
     $dom->append_child($root);
@@ -266,7 +315,7 @@ TODO: Support de transformation en cascade, avec plusieurs feuilles de style ?
   {
     if (! $this->USE_SABLOTRON ){
       //libxslt
-      $xsltproc = domxml_xslt_stylesheet_file($fichier_xslt);
+      $xsltproc = domxml_xslt_stylesheet_file(getcwd() . "/" . $fichier_xslt);
       $result = $xsltproc->process($domxml, $this->xslt_params);
       //return $result->dump_mem(); // Effet de bord : le résultat contient l'entete XML [?xml version... ?] 
       return $xsltproc->result_dump_mem($result); // Mais on ne veux pas forcement cette entete. C'est à la feuille de style de le décider.
@@ -276,27 +325,27 @@ TODO: Support de transformation en cascade, avec plusieurs feuilles de style ?
       $xml = $domxml->dump_mem(true,"UTF-8");
       $arguments = array('/_xml' => $xml);
       $xp = xslt_create();
-      $result = xslt_process($xp, 'arg:/_xml', $fichier_xslt, NULL, $arguments, $this->xslt_params);
+      $result = xslt_process($xp, 'arg:/_xml', getcwd() . "/" . $fichier_xslt, NULL, $arguments, $this->xslt_params);
       xslt_free($xp);
       return $result;
     }
   }
 
   /*
-	function fichier_xml_vers_html($fichier_xml, $fichier_xslt)
-	{
-		if (file_exists ($fichier_xml) == true)
-		{
-			$xp = xslt_create();
-			$result = xslt_process($xp, $fichier_xml, $fichier_xslt);
-			xslt_free($xp);
-		}
-		else
-		{
-			die("Le fichier $fichier_xml n'existe pas !");
-		}
-		return $result;
-	}
+  function fichier_xml_vers_html($fichier_xml, $fichier_xslt)
+  {
+    if (file_exists ($fichier_xml) == true)
+    {
+      $xp = xslt_create();
+      $result = xslt_process($xp, $fichier_xml, $fichier_xslt);
+      xslt_free($xp);
+    }
+    else
+    {
+      die("Le fichier $fichier_xml n'existe pas !");
+    }
+    return $result;
+  }
   */
 }
 ?>

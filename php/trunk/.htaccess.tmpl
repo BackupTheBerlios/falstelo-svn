@@ -4,11 +4,13 @@ Allow From All
 AddDefaultCharset utf-8
 
 DirectoryIndex index.php
-ErrorDocument 404 /index.php?page=404
 
 <IfModule mod_php4.c>
 	php_value arg_separator.output "&amp;"
 </IfModule>
 
 RewriteEngine On
-RewriteRule ^([a-zA-Z0-9\-_]*).html$ /absolute/path/to/falstelo/index.php?page=$1 [L,QSA]
+RewriteCond %{REQUEST_FILENAME} !-F
+RewriteRule ^([a-zA-Z\.0-9\/\-_]*).html$ /absolute/path/to/falstelo/index.php?page=$1 [L,QSA]
+RewriteCond %{REQUEST_FILENAME} !-F
+RewriteRule ^([a-zA-Z\.0-9\/\-_]*)$ /absolute/path/to/falstelo/index.php?page=404&erreur=$1 [L,QSA]
