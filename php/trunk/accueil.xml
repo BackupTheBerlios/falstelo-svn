@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<?xml-stylesheet href="xslt/accueil.xsl" type="text/xsl" ?>
-<page>
-  <titre>Bonvenon sur la ĉefpaĝo de la « falstelo » projekto !</titre>
-  <intro>Un moteur de transformation XSLT</intro>
-  <texte>Falstelo a pour but de proposer un ensemble de classes facilitant la mise en place d'un site web basé sur XML et XSLT, pouvant également utiliser une base de donnée.</texte>
-  <texte>L'objectif est de laisser à l'utilisateur uniquement la gestion des requetes SQL ainsi que de l'écriture des feuilles XSLT. Falstelo s'occupe de l'extraction des données en XML, et de la transformation XSLT, et éventuellement du cache disque.</texte>
-  <texte>De plus, Fastelo est facilement surchargeable afin d'ajouter une gestion multilangue à votre convenance, ainsi qu'une gestion des sessions. Des modèles d'implémentation de ces fonctions vous sont proposés, que vous pourrez adapter à vos besoins.</texte>
-  <texte>L'implémentation actuelle de Falstelo est faite en PHP, mais sa simplicité (environ 500 lignes de code), fait qu'il est très facilement portable dans d'autre langages, comme Java (langage initial du projet, développé lors d'un projet Java à l'UTBM) ou Python.</texte>
-  <texte>Un serveur Subversion sera prochainement mis à votre disposition afin que vous puissiez récupérer le code source du projet.</texte>
-</page>
+<?xml-stylesheet href="xslt/common.xsl" type="text/xsl" ?>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Projet Falselo</title>
+    <link rel="stylesheet" type="text/css" href="common.css"/>
+  </head>
+  <body>
+    <h1>Projet Falstelo</h1>
+  <p>Falstelo a pour but de proposer un ensemble de classes facilitant la mise en place d'un site web basé sur XML et XSLT, et pouvant également utiliser une base de donnée.</p>
+  <p>L'objectif est de laisser à l'utilisateur uniquement la gestion des requetes SQL ainsi que de l'écriture des feuilles XSLT. Falstelo s'occupe de l'extraction des données en XML, de la transformation XSLT, et éventuellement du cache disque.</p>
+  <p>De plus, Fastelo est facilement surchargeable afin d'ajouter une gestion multilangue à votre convenance, ainsi qu'une gestion des sessions. Des modèles d'implémentation de ces fonctions vous sont proposés, que vous pourrez adapter à vos besoins.</p>
+  <p>L'implémentation actuelle de Falstelo est faite en PHP, mais sa simplicité (environ 500 lignes de code), fait qu'il est très facilement portable dans d'autre langages, comme Java (langage initial du projet, développé lors d'un projet Java à l'UTBM) ou Python.</p>
+  <p>PHP Falstelo est disponible selon les termes de la licence GPL.</p>
+  </body>
+</html>
 

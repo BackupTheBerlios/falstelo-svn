@@ -1,145 +1,109 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet 
  version="1.0" 
- xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+ xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+ xmlns="http://www.w3.org/1999/xhtml">
   <xsl:output
-   doctype-public="-//W3C//DTD HTML 4.01 Transitional//EN"
-   doctype-system="http://www.w3.org/TR/html4/loose.dtd"
-   encoding="iso-8859-1"
+   doctype-public="-//W3C//DTD XHTML 1.0 Transitional//EN"
+   doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"
+   encoding="UTF-8"
    indent="yes"
-   method="html"
-   omit-xml-declaration="yes"
+   method="xml"
+   omit-xml-declaration="no"
    version="1.0"/>
 
+  <xsl:param name="baseurl" select="'http://lisa.bouil.org/~bouil/internet/falstelo/php/trunk/'"/>
   <xsl:param name="Message" select="''"/>
-
-  <xsl:decimal-format name="francais" decimal-separator="," grouping-separator=" "/>
-
-  <xsl:template name="Onglet">
-    <xsl:param name="NomOnglet" select="ERREUR"/>
-    <xsl:param name="LienOnglet" select="ERREUR"/>
-    <xsl:choose>
-      <xsl:when test="$onglet != $NomOnglet">
-	<li class="unselected">
-	  <a href="{$LienOnglet}"><xsl:value-of select="$NomOnglet"/></a>
-	</li>
-      </xsl:when>
-      <xsl:otherwise>
-	<li class="selected">
-	  <a href="{$LienOnglet}"><xsl:value-of select="$NomOnglet"/></a>
-	</li>
-      </xsl:otherwise>
-    </xsl:choose>
-  </xsl:template>
+  <xsl:param name="titre-page"  xmlns:html="http://www.w3.org/1999/xhtml" select="//html:html/html:head/html:title"/>
+  <xsl:param name="css-file"  xmlns:html="http://www.w3.org/1999/xhtml" select="'common.css'"/>
 
   <xsl:template match="/">
-    <html>
+    <html lang="fr" xml:lang="fr">
       <head>
+	<base href="{$baseurl}"/>
 	<title>Falstelo - <xsl:value-of select="$titre-page"/></title>
-	<link rel="stylesheet" href="./css/{$css-file}" type="text/css"/>
-	<script src="./js/scripts.js" type="text/javascript" defer="defer" />
+	<xsl:choose>
+	  <xsl:when xmlns:html="http://www.w3.org/1999/xhtml" test="count(//html:html/html:head/html:link[@rel='stylesheet']/@href) != 0">
+	    <link rel="stylesheet" xmlns:html="http://www.w3.org/1999/xhtml" href="{$baseurl}css/{//html:html/html:head/html:link[@rel='stylesheet']/@href}" type="text/css" title="Classique"/>
+	  </xsl:when>
+	  <xsl:otherwise>
+	    <link rel="stylesheet" href="{$baseurl}css/{$css-file}" type="text/css" title="Classique"/>
+	  </xsl:otherwise>
+	</xsl:choose>
       </head>
       <body>
+
 	<div class="top">
-	  <div class="logo"><img src="img/logo.png" alt="La Falstelo projekto - Logo"/></div>
+	  <div class="logo">
+	    <img src="img/logo.png"/>
+	  </div>
+	</div>
+
+	<div class="boites gauche">
+	  <div class="boite">
+	    <p class="titre">
+	      Menu
+	    </p>
+	    <div class="corps">
+	      <ul>
+		<li><a href="accueil.html">Accueil</a></li>
+		<li><a href="documentation/documentation.html">Documentation</a></li>
+		<li>
+		  Page du projet sur BerliOS.de&#160;:
+		  <ul>
+		    <li><a href="https://developer.berlios.de/projects/falstelo/">Résumé</a></li>
+		    <li><a href="https://developer.berlios.de/project/showfiles.php?group_id=1734">Téléchargement</a></li>
+		    <li><a href="https://developer.berlios.de/svn/?group_id=1734">Code source</a></li>
+		    <li><a href="https://developer.berlios.de/bugs/?group_id=1734">Rapports de bugs</a></li>
+		  </ul>
+		</li>
+		<li><a href="contact.html">Contact</a></li>
+	      </ul>
+	    </div>
+	  </div>
 	</div>
 
 	<div class="main">
 
-	  <div class="onglets">
-	    <ul class="liens">
-	      <xsl:call-template name="Onglet">
-		<xsl:with-param name="NomOnglet" select="'Ĉefpaĝo'"/>
-		<xsl:with-param name="LienOnglet" select="'accueil.html'"/>
-	      </xsl:call-template>
-<!--	      <xsl:call-template name="Onglet">
-		<xsl:with-param name="NomOnglet" select="'Kompendio'"/>
-		<xsl:with-param name="LienOnglet" select="'manuel.html'"/>
-	      </xsl:call-template>
-	      <xsl:call-template name="Onglet">
-		<xsl:with-param name="NomOnglet" select="'Kontaktu nin'"/>
-		<xsl:with-param name="LienOnglet" select="'contact.html'"/>
-	      </xsl:call-template>-->
-	    </ul>
-	  </div>
-
-
-	  
-	  <div class="contenu">
+	  <div class="contenu" id="contenu">
 	    <xsl:if test="$Message != ''">
 	      <p class="message"><xsl:value-of select="$Message"/></p>
 	    </xsl:if>
 	    <xsl:apply-templates select="page/fichiers | page/requetes"/>
+	    <div style="clear: both">&#160;</div>
 	  </div>
 
-<!--	  <div class="onglets ongletsbas">
-	    <ul class="liens">
-	      <li class="unselected">
-		<a href="">FR</a>
-	      </li>
-	      <li class="selected">
-		<a href="">EO</a>
-	      </li>
-	    </ul>
-	  </div>-->
 
 	</div>
 
 	<!-- Pied de page -->
-	<div class="pied">
-	  <p>© Copyleft La Falstelo Projekto 2004.</p>
+	<div id="pied">
+	  <p>© Copyright Nicolas Bouillon, 2004.</p>
+	  <p>Ce site utilise XML/XSLT grâce à PHP Falstelo</p>
 	</div>
-	
       </body>
     </html>
     <xsl:comment>Généré par le processeur xslt de <xsl:value-of select="system-property('xsl:vendor')"/> (<xsl:value-of select="system-property('xsl:vendor-url')"/>), supportant XSLT version <xsl:value-of select="system-property('xsl:version')"/></xsl:comment>
   </xsl:template>
 
-  <xsl:template match="page/session/panier">
-    <!--    <xsl:if test="count(produit) &gt; 0">-->
-    <div class="boite panier">
-      <p class="titre">Votre Panier</p>
-      <!--(<a href="#" onclick="javascript:document.getElementById('panier').style.display='none'">V</a>)-->
-      <div id="panier" class="corps">
-	<p>Votre <a href="panier.html">panier</a> contient <xsl:value-of select="sum(produit/quantite)"/> produit(s)</p>
-	<p style="border-top: 1px solid black">Total: <xsl:value-of select="format-number(sum(produit/totalttc), '# ##0,00', 'francais')"/> EUR</p>
-      </div>
-    </div>
-    <!--    </xsl:if>-->
-  </xsl:template>
-
-  <!-- <boites categories> !-->
-
-  <xsl:template match="page/categories">
-    <ul>
-      <li>
-	Pastis
-      </li>
-      <li>
-	Absinthe
-      </li>
-      <li>
-	Accessoires
-      </li>
-      <xsl:apply-templates/>
-    </ul>
-  </xsl:template>
-
-  <xsl:template match="page/categories/categorie">
-    <li>
-      <a href="categorie.html?cat_nom={@cat_nom}"><xsl:value-of select="@cat_nom"/></a>
-    </li>
-  </xsl:template>
-
-  <!-- </boite categories> !-->
-
   <xsl:template match="adodb_result/query"/>
 
   <xsl:template match="erreur">
-    <h1 style="color: red;"><xsl:apply-templates/></h1>
+    <h1 style="color: red; text-align: center;"><xsl:apply-templates/></h1>
+  </xsl:template>
+
+  <xsl:template xmlns:html="http://www.w3.org/1999/xhtml" match="html">
+    <xsl:apply-templates select="html:body"/>
+  </xsl:template>
+
+  <xsl:template xmlns:html="http://www.w3.org/1999/xhtml" match="html:html/html:head"/>
+
+  <xsl:template xmlns:html="http://www.w3.org/1999/xhtml" match="html:body">
+    <xsl:copy-of select="text() | *"/>
   </xsl:template>
 
 </xsl:stylesheet>
+
 
 
 

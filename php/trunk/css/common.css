@@ -4,13 +4,6 @@
 
   Bleu foncé : #ffd249
   Orange : #4154a3
-
-  Couleur de l'onglet selectionné:      #EABD86; (sable)
-                                        #FFD700;
-                                        url("../images/sable.jpg")
-  Couleur de l'onglet non selectionné:  #73ADDF; (bleu)
-                                        #94BAE7;
-                                        url("../images/nuage.jpg")
   Couleur de fond des formulaires:      #EEEEEE;
 */
 
@@ -46,8 +39,7 @@ div.contenu
 { 
   border: 2px solid #ffd249;
   padding: 1em;
-  -moz-border-radius-topright: 10px;
-  -moz-border-radius-bottomleft: 10px;
+  -moz-border-radius: 1em;
   min-height: 25em;
 /*  -moz-opacity: 0.8;*/
   background-color: white;
@@ -62,11 +54,7 @@ div.contenu p.message
 
 h1
 {
-  font-size: 1.3em;
-  margin-bottom: 1em;
-  text-align: center;
-  padding-bottom: 0.2em;
-/*  border-bottom: 1px dotted black;*/
+
 }
 
 form
@@ -95,7 +83,6 @@ a
 {
   text-decoration: none;
   color: #4154a3;
-
 }
 
 a:hover
@@ -110,36 +97,15 @@ img
   border: none;
 }
 
-
-.montant
-{
-  text-align: right;
-}
-
-/*
-.montant:after
-{
-  content: ' ¤';
-}
-*/
-
-.nombre
-{
-  text-align: right;
-}
-
-
 ul
 {
-  list-style: none;
-  margin: 0px;
-  padding: 0px;
+margin : 0em;
+padding-left: 1em;
 }
-ul li
+
+li
 {
-  list-style: none;
-  margin: 0px;
-  padding: 0px;
+/*  padding-left: 1em;*/
 }
 
 /* Entete */
@@ -155,97 +121,14 @@ div.logo
 { 
 }
 
-
-div.onglets
-{ 
-  z-index: 1;
-}
-
-div.onglets ul.liens
-{ 
-}
-
-div.onglets ul.liens li
-{ 
-/*  border: 1px solid green;*/
-  display: inline;
-  text-align: center;
-  font-weight: bold;
-
-}
-
-div.ongletsbas ul.liens li
-{
-  display: block;
-  float: right;
-  margin-left: 0.4em;
-}
-
-div.onglets ul.liens li a
-{
-
-  -moz-border-radius-topleft: 1.1em;
-  -moz-border-radius-topright: 1.1em;
-
-  padding-left: 1.5em;
-  padding-right: 1.5em;
-}
-
-div.ongletsbas ul.liens li a
-{ 
-  
-  -moz-border-radius-topleft: 0;
-  -moz-border-radius-topright: 0;
-  -moz-border-radius-bottomleft: 1.1em;
-  -moz-border-radius-bottomright: 1.1em;
-}
-
-div.onglets ul.liens li.selected a
-{ 
-  color: #4154a3; 
-  background-color: #ffd249;
-  color: #4154a3;
-/*  border: 2px solid #ffd249;
-  border-bottom: none;*/
-  
-}
-
-div.onglets ul.liens li.unselected a
-{ 
-  background-color: #4154a3;
-  color:  #ffd249;
-/*  border: 2px solid #ffd249;;
-  border-bottom: none;*/
-  color:  #ffd249;
-}
-
-div.onglets ul.liens li.unselected a:hover
-{
-  background-color:  #ffd249;
-  color: #4154a3;
-  text-decoration: none;
-}
-
-
-
-/* Fin Entete */
-
 /* Barre de gauche */
-
-@media print
-{
-  div.boites
-  {
-    display: none;
-  }
-}
 
 div.boites
 {
   margin-top: 2em;
   margin-left: 0.5em;
   float: left;
-  width: 9em;
+  width: 13em;
 }
 
 div.boites div.boite
@@ -272,8 +155,8 @@ div.boites div.boite div.corps
   overflow: hidden;
   border: 2px solid #ffd249;
   border-top-style: none;
-/*  -moz-border-radius-bottomleft : 0.4em;
-  -moz-border-radius-bottomright : 0.4em;*/
+  -moz-border-radius-bottomleft : 0.4em;
+  -moz-border-radius-bottomright : 0.4em;
   padding-left: 0.25em;
   padding-right: 0.25em;
   padding-top: 0.3em;
@@ -304,7 +187,7 @@ div.main
   margin-top: 2em;
   margin-right: 2em;
   margin-bottom: 1em;
-  margin-left: 2em;
+  margin-left: 15em;
   text-align: justify;
 }
 
@@ -322,3 +205,15 @@ div.pied
 /*  border-top : 1px solid black;*/
 }
 
+@media print
+{
+  div.boites, div.top
+  {
+    display: none;
+  }
+
+  div.main
+  {
+    margin-left: 2em;
+  }
+}
