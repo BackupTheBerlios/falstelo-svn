@@ -66,6 +66,7 @@ Pour servir la page "page_demandee" de maniere normale
     // Test d'existence du fichier correspondant à la page demandée
     if ( file_exists($page_affichee . ".php") )
     {
+				
       // le fichier .php existe, on l'utilise alors (cas des pages dynamiques, avec accès à la bdd)
       require_once($page_affichee . ".php");
       chdir(dirname($page_affichee . ".php"));
@@ -83,7 +84,6 @@ Pour servir la page "page_demandee" de maniere normale
         $header_http = "HTTP/1.x 404 Not Found";
         $page_affichee = $this->PAGE_404;
       }
-    
       // On teste pour voir si l'utilisateur a surchargé lui meme la classe TTransformation
       if (file_exists("usrlib/tusrtransformation.php"))
       {

@@ -1,0 +1,4 @@
+AddHandler mod_python .html
+PythonHandler principal
+PythonDebug On
+PythonAutoReload On 
