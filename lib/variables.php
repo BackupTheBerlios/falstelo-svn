@@ -6,9 +6,9 @@
 
 error_reporting(E_ERROR |  E_PARSE | E_CORE_ERROR | E_COMPILE_ERROR | E_USER_ERROR );
 $GLOBALS["dbhost"] = "localhost";
-$GLOBALS["dbname"] = "falstelo";
-$GLOBALS["dbuser"] = "falstelo";
-$GLOBALS["dbpass"] = "noychi";
+$GLOBALS["dbname"] = "www";
+$GLOBALS["dbuser"] = "www";
+$GLOBALS["dbpass"] = "soleil13";
 $GLOBALS["dbtype"] = "postgres";
 setlocale(LC_MONETARY, 'fr_FR');
 
