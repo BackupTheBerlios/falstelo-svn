@@ -16,16 +16,20 @@
 
     <p>Afin de pouvoir utiliser PHP Falstelo pour votre site, il faut vous assurer que vous possèdez les élements suivant&#160;:</p>
     <ol>
-      <li>Apache avec le module <tt>mod_rewrite</tt> activé&#160;;</li>
+      <li>Apache avec le module mod_rewrite activé&#160;;</li>
       <li>PHP avec le support d'au moins une base de donnée si vous désirez en utiliser une&#160;;</li>
-      <li>la librairie adodb pour php, toujours dans le cas ou vous souhaitez utiliser une base de donnée&#160;;</li>
+      <li>la librairie ADODB pour php, toujours dans le cas ou vous souhaitez utiliser une base de donnée&#160;;</li>
       <li>le support de XML pour PHP&#160;;</li>
       <li>le support des transformations par PHP, soit via Sablotron, soit via libxslt.</li>
     </ol>
     
     <h1>Installation</h1>
 
+    <p>Pour installer PHP Falstelo, vous avez le choix d'installer une version stable, ou alors la dernière version en provenance du dépot Subversion.</p>
+
     <h2>Version stable</h2>
+
+    <p>La version stable peut être téléchargée depuis la page d'accueil de Falstelo.</p>
 
     <h2>Version de développement</h2>
 
