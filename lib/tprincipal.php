@@ -42,17 +42,17 @@ class Tprincipal
     {
       global $voir_xml;
       // Test d'existence du fichier correspondant à la page demand�
-      if ( file_exists("xml/". str_replace("_", "/", $page) .".php") )
+      if ( file_exists("xml/" . $page . ".php") )
 	{
 	  // le fichier .php existe, on l'utilise alors (cas des pages dynamiques, avec accès à la bdd)
-	  require("xml/". str_replace("_", "/", $page) .".php");
+	  require("xml/" . $page . ".php");
 	  $nom_classe = "T" . $page;
 	  $iTransformation = new ${nom_classe}();
 	}
       else
 	{
 	  // le fichier $page.php n'existe pas, peut etre qu'un fichier $page.xml existe (cas des pages statiques)
-	  if ( !file_exists("xml/".$page.".xml") )
+	  if ( !file_exists("xml/" . $page . ".xml") )
 	    {
 	      // ni fichier .php, ni fichier .xml. La page demandée n'existe donc pas.
 	      // Affichage de la page statique d'erreur à la place
@@ -75,7 +75,8 @@ class Tprincipal
 	  $fichiers_xml = array("xml/".$page.".xml");
 	  if ($voir_xml == false)
 	    {
-	      $fichier_xslt = "xml/".$this->extract_stylesheet_filename($fichiers_xml[0]);  // le nom de fichier de la feuille de style est relatif au chemin du fichier xml.
+	      $xml_path = dirname($fichiers_xml[0]);
+	      $fichier_xslt = $xml_path . "/" . $this->extract_stylesheet_filename($fichiers_xml[0]);  // le nom de fichier de la feuille de style est relatif au chemin du fichier xml.
 	      if (!file_exists($fichier_xslt) || filetype($fichier_xslt) != "file")
 		{
 		  $iTransformation->fichier_xslt = null;

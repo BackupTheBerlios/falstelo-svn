@@ -21,8 +21,8 @@ require("rs2xml/rs2xml.inc.php");
 class Ttransformation
 {
   var $cache_path = "cache/";
-  var $xml_path = "";
-  var $xslt_path = "";
+  var $xml_path = ""; //sera ajouté au début de chaque chemin XML
+  var $xslt_path = ""; //idem pour les XSLT 
   var $temps_cache = 0;
   var $voir_xml = false;
   var $type_mime = "text/html";
