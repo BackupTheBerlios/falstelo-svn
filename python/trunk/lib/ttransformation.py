@@ -74,17 +74,17 @@ class TTransformation:
 		elif os.access(self.fichierDemande + ".py", os.R_OK) == True :
 			#sinon (le fichier XML n'existe pas), alors on tente un dernier essai avec un fichier py, que l'on importe...
 			self.resultat += "On a trouvé un fichier python... Ce travail reste à faire... : " + self.fichierDemande
-			fname = self.fichierDemande
-			slash = self.fichierDemande.rfind('/')
-			if slash != -1:
-				fname = self.fichierDemande[slash+1:]
-			importation = imp.find_module(fname, [self.repertoireTravail,])
-			module = imp.load_module("dynamicpage", importation[0], importation[1], importation[2])
-			classe = getattr(module, "T"+fname)
-			objet = new.instance(classe)
-			objet.__init__(self.requeteApache)
-			objet.proceder()
-			self.resultat += objet.resultat
+			#fname = self.fichierDemande
+			#slash = self.fichierDemande.rfind('/')
+			#if slash != -1:
+			#	fname = self.fichierDemande[slash+1:]
+			#importation = imp.find_module(fname, [self.repertoireTravail,])
+			#module = imp.load_module("dynamicpage", importation[0], importation[1], importation[2])
+			#classe = getattr(module, "T"+fname)
+			#objet = new.instance(classe)
+			#objet.__init__(self.requeteApache)
+			#objet.proceder()
+			#self.resultat += objet.resultat
 			self.typeMime = "text/plain"
 			self.codeRetour = apache.OK
 			return
