@@ -15,43 +15,105 @@ if (file_exists("usrlib/variables.php"))
 }
 
 class Ttransformation{
-  //valeurs par défaut qui seront écrasées par variables.php
-  var $USE_SABLOTRON = false;
-  var $type_mime = "text/html"; //type mime renvoyé par défaut
-  var $temps_cache = 0; //en secondes. Par défaut, pas de cache.
 
-  var $cache_path = "cache/"; //le répertoire ou seront stoqué les fichiers de cache. Doit etre écrivable par apache/php
+  /**
+  Contient une liste des requetes SQL à executer, sous forme de liste associative
+  Exemple :
+      $this->requetes_sql["requete1"] = "SELECT champ1, champ2, COUNT(champ3) champ4, ... FROM .... ;"
+      $this->requetes_sql["requete2"] = "SELECT ... FROM .... ;"
+      $this->requetes_sql["requete3"] = "SELECT ... FROM .... ;"
+   */
+  var $requetes_sql = array();//
+
+  /**
+  Si dans le resultat d'une requete SQL, certains champs contienent du XML valide.
+  Exemple de contenu :
+      $this->requetes_sql_champs_xml["requete1"] = array("champ1, champ4");
+      $this->requetes_sql_champs_xml["requete3"] = array("champ2");
+  */
+  var $requetes_sql_champs_xml = array();
+
+  /**
+  Liste des fichiers XML a utiliser. Le chemin des fichiers est relatif à la racine du site, plus XML_PATH (voir dans variables.php)
+  Exemple:
+      array_push($this->fichiers_xml, "repertoire/fichier.xml");
+  */
+  var $fichiers_xml = array();
+
+  /**
+  Chaque item du tableau contient un document XML DOM qui sera utilisé pour la transformation. Les fichiers XML et les requetes SQL seront placés à la fin de ce tableau avant transformation. On peut alors ajouter en tete de tableau des documents DOM XML générés manuellement pour une page donnée, ou pour toutes les pages via tusrtransformation (exemple typique : les variables de sessions de l'utilsateur : login, contenu du panier, ...)
+  */
+  var $array_nodexml = array();
+
+  /**
+  Contient le chemin vers le fichier XSLT utilsé pour la transformation. A définir depuis un fichier php surchargeant ttransformation ou tusrtransformation. Depuis un fichier .xml statique, cet attribut sera affecté selon la balise [?xml-stylesheet href...?] du document XML. Si aucun fichier XSLT n'est donné (autant pour les xml statiques que pour les fichiers php, le document XML sera affiché sans transformation.
+  Exemple :
+      $this->fichier_xslt = "xslt/xhtml2latex.xsl";
+  */
+  var $fichier_xslt = null;
+
+  /**
+  Contient la liste des parametres XSLT a fournir au processeur XSLT. Utilisé via tusrtransformation pour les parametres toujours utiles, ou par un fichier php classique pour des parametres pontuels.
+  Exemple :
+      $this->xslt_params["baseurl"] = "http://" . $_SERVER['SERVER_NAME'] . "/";
+  */
+  var $xslt_params = array();
+  
+  /**
+  Valeurs par défaut qui seront  écrasées par lib/variables.php et usrlib/variables.php.
+  Voir lib/variables.php pour la signification des ces variables.
+  */
+  var $USE_SABLOTRON = false;
+  var $type_mime = "text/html";
+  var $temps_cache = 0;
+  var $cache_path = "cache/";
   var $xml_path = ""; //sera ajouté au début de chaque chemin XML
   var $xslt_path = ""; //idem pour les XSLT 
   var $voir_xml = false; // est ce qu'on effectue la transformation XSLT
+
+  var $db_host = "";
+  var $db_name = "";
+  var $db_user = "";
+  var $db_pass = "";
+  var $db_type = "";
+  var $db_encoding = "";
+
+  /**
+  Variables internes de travail
+  */
   var $page = ""; //page affichée
   var $page_demandee = ""; //page demandée, peut etre differente, par exemple page_demandee = "nonexist" et page = "404"
 
-  var $requetes_sql = array();
-  var $requetes_sql_champs_xml = array();
-  var $fichiers_xml = array();
-  var $array_nodexml = array();
-  var $fichier_xslt = null;
-  var $fichier_xslt_relativetodir = null;
-  var $xslt_params = array();
-  
-  
   /**
-Constructeur de l'objet.
+  Constructeur de l'objet.
   */
   function Ttransformation($page, $page_demandee)
   {
+    // récupération des préférences de l'utilsateur
+    global $GLOBALS;
     $this->USE_SABLOTRON = $GLOBALS["USE_SABLOTRON"];
     $this->type_mime = $GLOBALS["TYPE_MIME"];
     $this->temps_cache = $GLOBALS["TEMPS_CACHE"];
+    $this->cache_path = $GLOBALS["CACHE_PATH"];
+    $this->xml_path = $GLOBALS["XML_PATH"];
+    $this->xslt_path = $GLOBALS["XSLT_PATH"];
+    $this->voir_xml = $GLOBALS["VOIR_XML"];
+
+    //connexion à la base de donnée
+    $this->db_host = $GLOBALS["dbhost"];
+    $this->db_name = $GLOBALS["dbname"];
+    $this->db_user = $GLOBALS["dbuser"];
+    $this->db_pass = $GLOBALS["dbpass"];
+    $this->db_type = $GLOBALS["dbtype"];
+    $this->db_encoding = $GLOBALS["dbencoding"];
 
     $this->page = $page;
     $this->page_demandee = $page_demandee;
   }
 
   /**
-Retourne la page demandée, ou bien la page d'erreur $page_erreur si la page n'existe pas. Accessoirement prends le fichier tu cache s'il existe et s'il n'est pas expiré, sinon écrit le fichier résultat dans le cache.
-@returns String contenant le code à afficher.
+  Retourne la page demandée, ou bien la page d'erreur $page_erreur si la page n'existe pas. Accessoirement prends le fichier tu cache s'il existe et s'il n'est pas expiré, sinon écrit le fichier résultat dans le cache.
+  @returns String contenant le code à afficher.
   */
   function get()
   {
@@ -119,13 +181,6 @@ Transforme la liste des requetes SQL en un ensemble de noeuds XML contenant le r
   */
   function sql_vers_xml($requetes)
   {
-    $dbhost = $GLOBALS["dbhost"];
-    $dbname = $GLOBALS["dbname"];
-    $dbuser = $GLOBALS["dbuser"];
-    $dbpass = $GLOBALS["dbpass"];
-    $dbtype = $GLOBALS["dbtype"];
-    $dbencoding = $GLOBALS["dbencoding"];
-
     if ( ! is_array($requetes) )
       {
 	return null;//"<erreur>Erreur, l'argument $sql n'est pas un tableau</erreur>";
@@ -134,8 +189,8 @@ Transforme la liste des requetes SQL en un ensemble de noeuds XML contenant le r
     
     if (sizeof($requetes)>0){
  
-      $db = &ADONewConnection($dbtype); // create a connection
-      $connexion_result = $db->PConnect($dbhost,$dbuser,$dbpass,$dbname); // Connexion à la base
+      $db = &ADONewConnection($this->db_type); // create a connection
+      $connexion_result = $db->PConnect($this->db_host, $this->db_user, $this->db_pass, $this->db_name); // Connexion à la base
       
       if ($connexion_result == false)
 	{
@@ -144,7 +199,7 @@ Transforme la liste des requetes SQL en un ensemble de noeuds XML contenant le r
 	}
       else
 	{
-	  $xml = "<"."?"."xml version='1.0' encoding='$dbencoding' ?".">\n";
+	  $xml = "<"."?"."xml version='1.0' encoding='$this->db_encoding' ?".">\n";
 	  $xml .= "<requetes>";
 	  foreach($requetes as $key => $sql)
 	    {
@@ -193,14 +248,6 @@ Prends tous les nodes XML du tableau, et les place dans un seul document XML
   */
   function agreger_xml($array_nodexml){
     $dom = domxml_new_doc("1.0");
-    if ($this->fichier_xslt_relativetodir != null){
-      $fich_xslt = $this->fichier_xslt_relativetodir;
-    }
-    else{
-      $fich_xslt = $this->fichier_xslt;
-    }
-    $pi = $dom->create_processing_instruction('xsl-stylesheet','href="' . $fich_xslt . '" type="text/xsl" ');
-    $dom->append_child($pi);
     $root = $dom->create_element("page");
     foreach($array_nodexml as $key=>$node){
       if ($node != null){
@@ -218,12 +265,14 @@ TODO: Support de transformation en cascade, avec plusieurs feuilles de style ?
   function xml_vers_html($domxml, $fichier_xslt)
   {
     if (! $this->USE_SABLOTRON ){
+      //libxslt
       $xsltproc = domxml_xslt_stylesheet_file($fichier_xslt);
       $result = $xsltproc->process($domxml, $this->xslt_params);
-      return $result->dump_mem();
-      //return $xsltproc->result_dump_mem($result);
+      //return $result->dump_mem(); // Effet de bord : le résultat contient l'entete XML [?xml version... ?] 
+      return $xsltproc->result_dump_mem($result); // Mais on ne veux pas forcement cette entete. C'est à la feuille de style de le décider.
     }
     else{
+      //Sablotron
       $xml = $domxml->dump_mem(true,"UTF-8");
       $arguments = array('/_xml' => $xml);
       $xp = xslt_create();

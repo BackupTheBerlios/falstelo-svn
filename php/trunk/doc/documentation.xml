@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Documentation de PHP Falstelo</title>
+    <meta name="DC.Author" content="Nicolas Bouillon"/>
+    <meta name="Date" content="Mai 2004"/>
+  </head>
+  <body>
+    <h1>Présentation</h1>
+
+    <p>Falstelo propose de faciliter la création d'un site web basé sur XSLT. Le but est de pouvoir générer des pages de manière simple, en ne spécifiant que le strict minimum : requètes SQL à exécuter, fichiers XML statiques à utiliser, feuille de style XSLT appliquée. Mais cependant, \falstelo{} doit également pouvoir permettre d'ajouter des fonctionnalités supplémentaires sans difficultés, tout en restant très simple. En effet, \falstelo{} fait un peut moins de 600 lignes, réparties principalement dans deux classes.</p>
+
+    <h1>Prérequis</h1>
+
+    <p>Afin de pouvoir utiliser PHP Falstelo pour votre site, il faut vous assurer que vous possèdez les élements suivant&#160;:</p>
+    <ol>
+      <li>Apache avec le module <tt>mod_rewrite</tt> activé&#160;;</li>
+      <li>PHP avec le support d'au moins une base de donnée si vous désirez en utiliser une&#160;;</li>
+      <li>la librairie adodb pour php, toujours dans le cas ou vous souhaitez utiliser une base de donnée&#160;;</li>
+      <li>le support de XML pour PHP&#160;;</li>
+      <li>le support des transformations par PHP, soit via Sablotron, soit via libxslt.</li>
+    </ol>
+    
+Installation}
+
+\subsection{Version stable}
+
+\subsection{Version de développement}
+
+\subsection{Mise en place et configuration}
+
+\section{Utilisation simple}
+
+\subsection{Pages statiques}
+
+\subsection{Pages dynamiques}
+
+\section{Utilsation avancée : personnalisation}
+
+Créer un fichier \texttt{tusrtransformation.php}.
+
+\end{document}
