@@ -2,7 +2,9 @@
 /*
  * (c) Nicolas Bouillon
  * Ce fichier est distribué selon la licence GNU GPL.
- * 
+ */
+ 
+/* 
  * NE PAS MODIFIER CE FICHIER ! MAIS SURCHARGER LES VARIABLES DANS usrlib/variables.php !
  */
 
