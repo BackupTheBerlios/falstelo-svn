@@ -24,6 +24,16 @@
   border: 1px solid black;
 }
 
+body
+{ 
+  background-attachment : fixed;
+  background-image: url("../images/fond.jpg");
+  background-repeat: no-repeat;
+  background-color: black;
+  background-position: bottom right;
+
+}
+
 html, body
 {
   font-family: sans-serif;
@@ -38,6 +48,8 @@ div.contenu
   padding: 1em;
   -moz-border-radius-topright: 10px;
   min-height: 25em;
+/*  -moz-opacity: 0.8;*/
+  background-color: white;
 }
 
 div.contenu p.message
@@ -133,9 +145,9 @@ ul li
 
 div.top
 { 
-/*  position: absolute;
+  position: fixed;
   left: 0;
-  top:0;*/
+  top:0;
 }
 
 div.logo
@@ -213,7 +225,6 @@ div.onglets ul.liens li.unselected a:hover
 
 div.boites
 {
-  margin-top: 2em;
   margin-left: 0.5em;
   float: left;
   width: 9em;
@@ -239,6 +250,8 @@ div.boites div.boite p.titre
 
 div.boites div.boite div.corps
 {
+  background-color: white;
+  overflow: hidden;
   border: 2px solid #ffd249;
   border-top-style: none;
 /*  -moz-border-radius-bottomleft : 0.4em;
@@ -270,7 +283,7 @@ div.boites input.text
 
 div.main
 {
-  margin-top: 2em;
+  margin-top: 160px;
   margin-right: 2em;
   margin-bottom: 1em;
   margin-left: 11em;

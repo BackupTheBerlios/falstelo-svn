@@ -36,7 +36,7 @@
   <xsl:template match="/">
     <html>
       <head>
-	<title>La Maison du Pastis : <xsl:value-of select="$titre-page"/></title>
+	<title>Falstelo - <xsl:value-of select="$titre-page"/></title>
 	<link rel="stylesheet" href="./css/{$css-file}" type="text/css"/>
 	<script src="./js/scripts.js" type="text/javascript" defer="defer" />
       </head>
@@ -100,23 +100,15 @@
 	  <div class="onglets">
 	    <ul class="liens">
 	      <xsl:call-template name="Onglet">
-		<xsl:with-param name="NomOnglet" select="'Accueil'"/>
+		<xsl:with-param name="NomOnglet" select="'Ĉefpaĝo'"/>
 		<xsl:with-param name="LienOnglet" select="'accueil.html'"/>
 	      </xsl:call-template>
 	      <xsl:call-template name="Onglet">
-		<xsl:with-param name="NomOnglet" select="'Produits'"/>
-		<xsl:with-param name="LienOnglet" select="'categorie_liste.html'"/>
+		<xsl:with-param name="NomOnglet" select="'Kompendio'"/>
+		<xsl:with-param name="LienOnglet" select="'manuel.html'"/>
 	      </xsl:call-template>
 	      <xsl:call-template name="Onglet">
-		<xsl:with-param name="NomOnglet" select="'Mon panier'"/>
-		<xsl:with-param name="LienOnglet" select="'panier.html'"/>
-	      </xsl:call-template>
-	      <xsl:call-template name="Onglet">
-		<xsl:with-param name="NomOnglet" select="'Mon compte'"/>
-		<xsl:with-param name="LienOnglet" select="'compte.html'"/>
-	      </xsl:call-template>
-	      <xsl:call-template name="Onglet">
-		<xsl:with-param name="NomOnglet" select="'Contact'"/>
+		<xsl:with-param name="NomOnglet" select="'Kontaktu nin'"/>
 		<xsl:with-param name="LienOnglet" select="'contact.html'"/>
 	      </xsl:call-template>
 	    </ul>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet 
  version="1.0" 
  xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
@@ -12,9 +12,9 @@
    version="1.0"/>
 
   <xsl:include href="common.xsl"/>
-  <xsl:variable name="titre-page">Accueil</xsl:variable>
+  <xsl:variable name="titre-page">Ĉefpaĝo</xsl:variable>
   <xsl:variable name="css-file">common.css</xsl:variable>
-  <xsl:variable name="onglet">Accueil</xsl:variable>
+  <xsl:variable name="onglet">Ĉefpaĝo</xsl:variable>
 
   <xsl:template match="page">
     <xsl:apply-templates/>
