@@ -9,6 +9,7 @@ class Tusrtransformation extends Ttransformation
   }
 
   function get(){
+    $this->xslt_params["baseurl"] = "http://" . $_SERVER['SERVER_NAME'] . "/";
     //parametres de cache et autres...
     return Ttransformation::get();
   }

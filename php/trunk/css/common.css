@@ -27,9 +27,9 @@ html, body
 
 @media screen
 {
-  body
+  html
   { 
-    background-attachment : fixed;
+    /*background-attachment : fixed;*/
     background-image: url("../img/fond.jpg");
     background-repeat: no-repeat;
     background-color: black;
@@ -160,7 +160,6 @@ div.boites div.boite p.titre
 div.boites div.boite div.corps
 {
   background-color: white;
-  overflow: hidden;
   border: 2px solid #ffd249;
   border-top-style: none;
   -moz-border-radius-bottomleft : 0.4em;
@@ -168,6 +167,7 @@ div.boites div.boite div.corps
   padding-left: 0.25em;
   padding-right: 0.25em;
   padding-top: 0.3em;
+	padding-bottom: 0.3em;
   margin: 0px;
 }
 

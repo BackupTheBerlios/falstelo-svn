@@ -7,11 +7,18 @@
   </head>
   <body>
     <h1>Projet Falstelo</h1>
+
+		<h2>Description</h2>
   <p>Falstelo a pour but de proposer un ensemble de classes facilitant la mise en place d'un site web basé sur XML et XSLT, et pouvant également utiliser une base de donnée.</p>
   <p>L'objectif est de laisser à l'utilisateur uniquement la gestion des requetes SQL ainsi que de l'écriture des feuilles XSLT. Falstelo s'occupe de l'extraction des données en XML, de la transformation XSLT, et éventuellement du cache disque.</p>
   <p>De plus, Fastelo est facilement surchargeable afin d'ajouter une gestion multilangue à votre convenance, ainsi qu'une gestion des sessions. Des modèles d'implémentation de ces fonctions vous sont proposés, que vous pourrez adapter à vos besoins.</p>
   <p>L'implémentation actuelle de Falstelo est faite en PHP, mais sa simplicité (environ 500 lignes de code), fait qu'il est très facilement portable dans d'autre langages, comme Java (langage initial du projet, développé lors d'un projet Java à l'UTBM) ou Python.</p>
   <p>PHP Falstelo est développé par Nicolas Bouillon et par Damien Boucard. Il est disponible selon les termes de la licence GPL.</p>
+
+		<h2>Que signifie «&#160;Falstelo&#160;»&#160;?</h2>
+
+		<p>«&#160;Falstelo&#160;» est un mot d'<a href="http://www.esperanto.net">Éspéranto</a>. On peut très facilement comprendre ce mot en le décomposant&#160;: «&#160;-o&#160;» est la terminaison caractéristique des substantifs (noms), «&#160;stelo&#160;» signifie «&#160;étoile&#160;», alors que «&#160;fali&#160;» signifie tomber. «&#160;Falstelo&#160;» signifie donc litéralement «&#160;étoile qui tombe&#160;», c'est à dire «&#160;étoile filante&#160;»</p>
+
   </body>
 </html>
 

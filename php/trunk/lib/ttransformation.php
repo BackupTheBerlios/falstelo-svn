@@ -178,7 +178,7 @@ class Ttransformation{
         //on verifie d'abord si le repertoire d'accueil existe. Sinon on le cree.
         if ( ! file_exists(dirname($fichier_cache)) )
         {
-          mkdir(dirname($fichier_cache), umask(), true);
+          mkdir(dirname($fichier_cache), 0700);
         }
         $fp = @fopen ($fichier_cache, "w");
         if ($fp)
@@ -317,7 +317,7 @@ TODO: Support de transformation en cascade, avec plusieurs feuilles de style ?
       //libxslt
       $xsltproc = domxml_xslt_stylesheet_file(getcwd() . "/" . $fichier_xslt);
       $result = $xsltproc->process($domxml, $this->xslt_params);
-      //return $result->dump_mem(); // Effet de bord : le résultat contient l'entete XML [?xml version... ?] 
+      //return $result->dump_mem(); // Effet de bord : le résultat contient l'entete XML [?xml version... ?]
       return $xsltproc->result_dump_mem($result); // Mais on ne veux pas forcement cette entete. C'est à la feuille de style de le décider.
     }
     else{

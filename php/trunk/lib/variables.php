@@ -47,7 +47,7 @@ $GLOBALS["VOIR_XML"] = false;
 
 
 /*
-Le nom de la page xml ou php utilisé pour l'erreur 404.
+Le nom de la page xml ou php utilisé pour l'erreur 404. Changer également le fichier .htaccess en conséquence.
 */
 $GLOBALS["PAGE_404"] = "404";
 
@@ -59,11 +59,11 @@ $GLOBALS["AFFICHER_TEMPS"] = false;
 /*
 Paramètres de connexion à la base de donnée, si nécessaire.
 */
-$GLOBALS["dbhost"] = "database_host";
-$GLOBALS["dbname"] = "database_name";
-$GLOBALS["dbuser"] = "database_user";
-$GLOBALS["dbpass"] = "database_password";
-$GLOBALS["dbtype"] = "database_type"; // "mysql", "postgres", "oracle"...
+$GLOBALS["dbhost"] = "bdd_hote";
+$GLOBALS["dbname"] = "bdd_nom";
+$GLOBALS["dbuser"] = "bdd_utilisateur";
+$GLOBALS["dbpass"] = "bdd_mot_de_passe";
+$GLOBALS["dbtype"] = "bdd_type"; // "mysql", "postgres", "oracle"...
 $GLOBALS["dbencoding"] = "UTF-8"; // la table de caractère utilisée dans la base
 
 
