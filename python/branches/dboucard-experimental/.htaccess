@@ -1,4 +1,4 @@
-AddHandler python-program .html
+AddHandler mod_python .html
 PythonHandler lib.falstelo
 PythonDebug On
 PythonAutoReload On 
