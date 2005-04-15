@@ -55,7 +55,7 @@ def handler(req):
 			t = chercherClasse(req, base, module, module+"transformation")
 	if t == None:
 		# Utilisation de la classe generique par defaut
-		#apache.log_error("Utilisation de la classe Ttransformation")
+		#~ apache.log_error("Utilisation de la classe Ttransformation")
 		t = Ttransformation(req, conf)
 	# on lance la transformation
 	t.proceder()

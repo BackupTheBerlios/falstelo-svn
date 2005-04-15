@@ -106,11 +106,8 @@ class Ttransformation:
 		rendu. Il est deconseille de surcharger cette methode sauf
 		pour des cas tres particuliers.
 		"""
-		apache.log_error("AVANT acceder()")
 		if (self.acceder()):	
-			apache.log_error("ouvrirBDD()")
 			self.ouvrirBDD()
-			apache.log_error("FIN ouvrirBDD()")
 			self.transformer()
 			self.fermerBDD()
 			if self.session!={}: self.session.save()
@@ -243,7 +240,6 @@ class Ttransformation:
 		Envoie le document XML a la moulinette XSLT. Normalement cette
 		methode n'a pas a etre surchargee.
 		"""
-		apache.log_error("avant agreg")
 		doc = self.agregation()
 		if self.fichierXSLT !=None:
 			#~ libxml2.debugMemory(1)
@@ -279,7 +275,6 @@ class Ttransformation:
 		"""
 		racineFichiers = racine.newChild(None, u"fichiers", None)
 		for fichier in self.fichiersXML:
-			apache.log_error("parsing " + fichier)
 			domFichier = libxml2.parseFile(fichier)
 			racineFichier = domFichier.getRootElement()
 			racineFichiers.addChild(racineFichier.docCopyNode(domDocument, True))
