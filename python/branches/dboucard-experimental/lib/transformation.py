@@ -43,6 +43,7 @@ class Ttransformation:
 		self.requetesSQL = {}
 		self.resultatsSQL = {}
 		self.fichierXSLT = None
+		self.parametresXSLT = {}
 		self._resultat = []
 		self.bdd = None
 		self.connexion = None
@@ -153,7 +154,7 @@ class Ttransformation:
 		#libxml2.debugMemory(1)
 		styleDoc = libxml2.parseFile(self.fichierXSLT)
 		style = libxslt.parseStylesheetDoc(styleDoc)
-		result = style.applyStylesheet(doc, None)
+		result = style.applyStylesheet(doc, self.parametresXSLT)
 		stringval = style.saveResultToString(result)
 		style.saveResultToFilename("/tmp/foo", result, 0)
 		style.freeStylesheet()
