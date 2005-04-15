@@ -319,7 +319,7 @@ class Ttransformation:
 		racine = domDocument.newChild(None, self.racineXML, None);
 		
 		if len(self.session) > 0:
-			self.agregerSession(self.racine)
+			self.agregerSession(racine)
 		if len(self.fichiersXML) > 0:
 			self.agregerFichiersXML(racine)
 		if len(self.resultatsSQL) > 0:
