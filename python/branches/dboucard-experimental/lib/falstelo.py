@@ -5,8 +5,8 @@ Auteurs :
   - Nicolas Bouillon
   - Damien Boucard
 Python-Falstelo est fourni sans aucune garantie.
-Pour plus de détails, voyez le fichier LICENCE.txt.
-Ce programme est libre et vous êtes encouragé à le redistribuer sous les conditions de la CECILL.
+Pour plus de details, voyez le fichier LICENCE.txt.
+Ce programme est libre et vous etes encourage à le redistribuer sous les conditions de la CECILL.
 """
 
 from mod_python import apache
