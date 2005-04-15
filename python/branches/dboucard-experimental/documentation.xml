@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:html="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head><title>Documentation de Python-Falstelo</title></head><body>
+    <h1>Présentation</h1>
+
+    <p>Falstelo se propose de faciliter la création d'un site web basé sur XML et XSLT. Le but est de pouvoir générer des pages de manière simple, en ne spécifiant que le strict minimum : requêtes SQL à exécuter, fichiers XML statiques à utiliser, feuille de style XSLT appliquée. Cependant, Falstelo doit également permettre d'ajouter des fonctionnalités supplémentaires sans difficulté, tout en restant très simple. En effet, Python Falstelo fait un peu plus de 300 lignes, réparties principalement dans deux scripts. À l'heure actuelle, il existe une version PHP ainsi qu'une version Python de Fastelo, mais la version PHP est beaucoup plus ancienne et plutôt insatisfaisante ; c'est pourquoi nous avons réécris le moteur dans le langage Java. Un portage dans le langage PHP (ainsi que tout autre langage de programmation, tel que Java) peut être envisagée, une fois que la version Python sera achevée.</p>
+
+    <h1>Prérequis</h1>
+
+    <p>Afin de pouvoir utiliser Python Falstelo pour votre site, il faut vous assurer que vous possèdez les élements suivant :</p>
+    <ol>
+      <li>Apache, version 2.x ;</li>
+	  <li>Python, version 2.3.x (pas testé avec 2.4 donc si vous avez testé, contactez-nous) ;</li>
+      <li>mod_python, version 3.x installé et activé, avec le support d'au moins une base de donnée (compatible API-DB)si vous désirez en utilisez une ;</li>
+      <li>le support de XML pour Python (libxml2-python2.3) et libxslt1-python2.3 ;</li>
+    </ol>
+    
+    <h1>Installation</h1>
+
+    <p>Pour installer Python Falstelo, vous avez le choix d'installer une version stable, ou alors la dernière version en provenance du dépot Subversion.</p>
+
+    <h2>Version stable</h2>
+
+    <p>La version stable peut être téléchargée depuis la <a href="http://falstelo.bouil.org/">page d'accueil de Falstelo</a>. Il vous suffit ensuite de décompresser l'archive à l'endroit de votre choix.</p>
+		<p style="font-weight: bold">Il n'y a pas de distribution officiellement stable à l'heure actuelle.</p>
+
+    <h2>Version de développement</h2>
+
+   <p>La version de développement peut être récupérée via Subversion :</p>
+   
+   <code>
+    svn checkout svn://svn.berlios.de/svnroot/falstelo/php/trunk
+   </code>
+    
+    <h2>Mise en place et configuration</h2>
+
+   <p>Attention : si vous déplacez le répertoire de Python Falstelo, il y a un fichier caché, <code>.htaccess</code>, qui pourrait ne pas être déplacé.</p>
+
+   <h3>Fichier .htaccess</h3>
+
+   <p>Pour faire fonctionner Python Falstelo sur votre machine, nous vous avons créé un fichier .htaccess à la racine de votre site. Vous pouvez l'éditer pour ajouter votre propre configuration. Vous pouvez aussi adapter la configuration que nous vous avons mise, cependant ne changez pas les lignes suivantes sous peine de ne plus voir marcher Python Falstelo :</p>
+   
+   <p><code>AddHandler mod_python .html</code></p>
+   <p><code>PythonHandler lib.falstelo</code></p>
+
+   <p>En revanche, rien ne vous empeche de mettre les lignes suivantes à <code>off</code>. La première ligne sert à activer le mode debug (les exceptions pythons sont affichées sur le navigateur ; la seconde ligne permet de recharger les scripts pythons si vous les modifiez, sans redémarrer votre serveur Apache (sachez cependant que cette fonctionnalité ne marche pas dans tous les cas) :</p>
+
+   <p><code>PythonDebug On</code></p>
+   <p><code>PythonAutoReload On</code></p>
+   
+   <p>Dans le cadre d'une utilisation simple de Python Falstelo, vous n'avez pas besoin de modifier plus ce fichier.</p>
+
+   <p>Notez aussi que le repertoire lib/ contient aussi un fichier .htaccess pour éviter que le code source de falstelo soit visible par quiconque (en particulier vos identifiants de base de données, si vous en utilisez une). Vous n'avez normalement pas besoin de toucher à ce fichier.</p>
+
+   <h3>Fichier <code>falstelo.conf</code></h3>
+
+   <p>Le fichier <code>falstelo.conf</code> du répertoire <code>lib/</code> contient tous les paramètres personnalisables de Python Falstelo. Vous ne devez donc le modifier pour l'adapter à votre configuration. Cependant sachez que dans une utilisation classique, vous n'avez pas grand chose à modifier. Pour ainsi dire, il n'y a que la configuration de la base de données qui est vraiment nécessaire, si vous désirez en utiliser une. Le reste est suffisement générique pour vous en passer, sauf pour des cas d'utilisations particuliers. Initialement, le fichier <code>falstelo.conf</code>, n'existe pas. Pour permettre une utilisation «out of the bos», nous avons définie une configuration par défaut en dur dans le code. Pour personnaliser les paramètres de Falstelo, il vous suffit de copier le fichier <code>falstelo.conf.tmpl</code> en <code>falstelo.conf</code> et de l'éditer. Ainsi, si une nouvelle version de Python Falstelo introduit de nouveaux paramètres, vous n'aurez pas besoin à refaire toute votre configuration. Vous n'aurez juste qu'à comparer le nouveau <code>falstelo.conf.tmpl</code> avec votre <code>falstelo.conf</code>. Mais si vous ne faites pas cette étape immédiatement, souvenez-vous qu'une configuration par défaut est incluse dans le code, avec une valeur qui évitera (si possible) toute incompatibilité avec votre précédente version (dans le cas contraire, une note sera indiquée).</p>
+
+   <p>Ce fichier de configuration contient entre autres les paramètres de connexion à la base de donnée (si vous souhaitez en utiliser une, bien sûr), les chemains d'accès et les noms spéciaux. Toutes les entrées regroupées par catégories et ont un nom explicite de manière à facilement comprendre la signification de chaque paramètre.</p>
+
+    <h1>Utilisation simple</h1>
+
+   <p>Une fois Python Falsteo installé, vous pouvez créer vos propres pages, statiques et/ou dynamiques. Nous allons donc voir à présent comment faire très facilement des pages statiques avec Python Falstelo en quelques minutes ! Prochainement, nous vous proposerons quelques modèles de pages, pour l'instant, nous allons étudier quelques exemples dans ce document, qui pourront vous servir de modèle pour vos propres pages.</p>
+
+   <p>Falstelo peut transformer trois types de pages. Des pages HTML statiques, tout comme on pourrait le faire sans Falstelo, des pages XML statiques, qui sont convertie avec XSLT, ou alors des pages dynamiques, utilisant par exemple des requêtes vers une base de donnée. Grâce à l'utilisation du mod_python (dans le <code>.htaccess</code> tel que nous l'avons vu plus haut), lorsque vous demandez la page <code>sous_rep/test.html</code>, c'est en réalité le script <code>lib/falstelo.py</code> qui sera appellée par Apache.</p>
+
+   <p>Lorque vous demander la page <code>test.html</code>, il peut se présenter plusieurs cas de figures :</p>
+
+   <ul>
+    <li>
+	  Une page dynamique existe (vous détaillerons les différents moyens de définir une page dynamique, plus loin), c'est le script python équivalent qui sera exécuté.
+	</li>
+    <li>
+	  Aucune page dynamique n'a été trouvée, mais le fichier <code>test.html</code> existe, c'est le cas classique d'une page statique tel que l'on ferait sans Falstelo.
+	</li>
+    <li>
+      Le fichier <code>test.html</code> n'existe pas, mais il existe un fichier <code>test.xml</code>, c'est le cas d'une page statique que nous expliquerons ci-après
+    </li>
+    <li>
+      Ni le fichier <code>test.xml</code>, ni <code>test.html</code> n'existe. Dans ce cas, c'est la page d'erreur (par défaut <code>404</code>) qui sera affichée, qu'elle soit dynamique ou statique, telle que définie dans la configuration de falstelo. Si ce fichier n'est pas défini ou n'existe pas lui-même, la page standard 404 d'Apache sera affiché (voir votre configuration d'Apache, si besoin).
+    </li>
+
+   </ul>
+
+   <p>Par la suite, les exemples cités seront prochainement disponibles dans le répertoire <code>exemple/</code> de Python Falstelo.</p>
+
+    <h2>Pages statiques simples</h2>
+
+   <p>Pour faire transformer à Python Falselo une page XML classique, il vous faut créer une feuille de style XSLT à votre goût. En général, les feuilles de styles sont placés dans le répertoire XSLT, mais vous êtes libres de les placer où bon vous semble si vous préférer organiser votre site web de manière différente. Créez ensuite un fichier XML classique contenant le contenu que vous souhaitez transformer. Comme Python Falstelo peut utiliser (voir plus bas dans l'utilisation avancée) plusieurs fichiers XML en entrée et des requêtes SQL, le document XML sera inclu dans un document XML plus vaste.</p>
+
+   <p>Par exemple, créez le document <code>exemple/statique.xml</code> à la racine de votre site :</p>
+
+   <pre><![CDATA[<?xml version='1.0' encoding='ISO-8859-1'?>
+<racine>
+  Test
+</racine>
+]]></pre>
+
+   <p>Ensuite, faites afficher la page <code>exemple/statique.html</code>. Vous obtiendez ceci :</p>
+
+   <pre><![CDATA[<?xml version="1.0" encoding="ISO-8859-1"?>
+<page>
+  <fichiers>
+    <racine>
+      Test
+    </racine>
+  </fichiers>
+</page>
+]]></pre>
+
+    <p>Plusieurs choses se sont produites : premièrement, le contenu de votre fichier XML a été inclu dans la balise <code>fichiers</code>. En effet, comme nous le verrons par la suite, le résultat de vos requêtes SQL sera disponible sous une autre balise, et vous pourrez également ajouter les données de votre choix sous le nom que vous voulez, comme fils direct de l'élement <code>page</code>. Deuxièmement, le fichier n'a été transformé par aucune feuille de style. En effet, puisqu'aucune feuille de style n'a été précisée dans l'entête du fichier XML, aucune transformation n'a été effectuée. Pour effectuer un transformation par rapport à votre feuille de sytle, vous devez ajouter l'instruction de traitement caractéristique juste après l'entête XML de votre fichier <code>exemple/statique.xml</code> :</p>
+
+   <pre><![CDATA[<?xml-stylesheet href="./xslt/simple.xsl" type="text/xsl"?>]]></pre>
+
+   <p>Ici, on suppose que votre fichier XSLT est placé dans le répertoire <code>xslt</code> par rapport au répertoire racine de votre site. Dans le cas où Python Falstelo ne trouve pas la feuille de style à appliquer (soit parce que l'instruction de traitement n'est pas présente, soit parce que le fichier spécifié est introuvable), votre fichier XML sera alors affiché sans aucune transformation.</p>
+
+	 
+	 <p>Voici <a href="../exemples/statique.html">ce que donne cet exemple</a>, à l'aide de la feuille de style <a href="../xslt/simple.xslt">simple.xslt</a>.</p>
+
+    <h2>Pages dynamiques ou statiques multiples</h2>
+
+   <p>De manière classique, lorsque vous appelez le fichier <code>test.html</code>, Falstelo, va essayer de charger le script nommé <code>test.py</code>. Il existe cependant d'autres manières de charger des pages dynamiques, que nous étudierons dans la section suivante</p>
+
+   <p>Dès lors qu'un seul fichier XML statique ne suffit pas, il faut passer par un fichier Python, contenant la liste des fichiers XML statiques ou des requêtes SQL dont vous avez besoin. Votre fichier Python contiendra une classe sur un modèle bien défini.</p>
+
+   <p>Pour expliquer comment s'articule une telle classe Python, nous verrons dans un premier temps le cas de fichiers XML multiples en expliquant les différentes instructions utilisés. Ensuite, nous expliquerons quelles instructions il est nécessaire d'ajouter pour effectuer des requêtes SQL.</p>
+
+   <h3>Définir les fichiers XML utilsés</h3>
+
+	 <p>Imaginons que nous souhaitons afficher le contenu de deux fichiers XML. La méthode décrite ci-dessus ne permet pas de le faire. Il faut alors créer un fichier Python nommé <code>multiplexml.py</code> ressemblant à ceci :</p>
+	 
+	 <pre><![CDATA[from lib.transformation import Ttransformation
+
+class Tmultiplexml(Ttransformation):
+    def __init__(self, req, conf):
+        Ttransformation.__init__(self, req, conf)
+        self.fichiersXML = ["exemples/statique.xml", "exemples/statique2.xml"]
+		self.fichierXSLT = "exemples/xslt/simple.xslt";
+	 ]]></pre>
+
+	 <p>Cette classe Python s'articule de la manière suivante : tout d'abord, on inclue l'objet de base fourni par falstelo (<code>./lib/transformation.py</code>). Il s'agit ensuite de déclarer une classe qui possède le même nom que notre fichier, précédé par un &quot;T&quot;. Cette classe va spécialiser la classe de base nommée <code>Ttransformation</code> fournie par Falstelo et qui se charge de tout le travail.</p>
+
+	 
+	 <p>Une fois ceci fait, il ne reste plus qu'a écrire le constructeur de notre classe (methode __init__). En premier lieu, il s'agit d'appeller le constructeur de la classe mère (Ttransformation) qui va initialiser les attributs de notre objet par des valeurs par défaut. Nous n'avons alors qu'à redéfinir les différentes variables dont nous avons besoin pour cette page : le fichier XSLT utilisé pour faire la transformation, le ou les fichiers XML utilisés.</p>
+	 
+	 <p>Afin d'afficher le résultat de la transformation, il suffit alors d'afficher la page <a href="../exemples/multiplexml.html">multiplexml.html</a>.</p>
+
+	 <p>On notera que les chemins des fichiers sont donnés par rapport à la racine du site, et non pas par rapport à l'emplacement du fichier Python.</p>
+
+	 
+	 <h3>Utiliser des requêtes SQL</h3>
+	 
+	 <p>Voici un exemple de fichier utilisant des requêtes SQL :</p>
+	 
+	 <pre><![CDATA[from lib.transformation import Ttransformation
+
+class Tblog_fr(Ttransformation):
+    def __init__(self, req, conf):
+	    Ttransformation.__init__(self, req, conf)
+        self.fichierXSLT = "xslt/blog.xsl"
+
+		sqlval = {}
+		sqlval["categorie"] = self.variables.get('categorie', ['%'])[0]
+		sqlval["theme"] = self.variables.get('theme', ['%'])[0]
+
+		self.requetesSQL["blog"] = """SELECT blog.id, blog.titre, blog.categorie, blog.theme,
+        blog.date, blog.corps, count(commentaires.id) nbcommentaires
+        FROM bouil_blog as blog LEFT JOIN bouil_commentaires as commentaires 
+        ON blog.id = commentaires.id_blog 
+        WHERE categorie LIKE '%(categorie)s' AND theme LIKE '%(theme)s'
+        GROUP BY blog.id ORDER BY date DESC;""" %sqlval;
+]]></pre>
+
+
+		<p>Pour commencer, nous récupérons simplement les variables passés à la page via le dictionnaire <code>self.variables</code>, afin de personnaliser la requête. Il s'agit d'un dictionnaire de listes car si plusieurs occurences de ma même variables apparaît dans la requête, leurs valeurs sont ajoutées dans la liste. C'est pourquoi nous sommes obligé de spécifier <code>[0]</code>, car ici, nous n'attendons qu'une seule occurence de la variable. Nous utilisons par ailleurs la méthode standard get() pour le cas où la variable n'existe pas (ou a une valeur nulle). Dans ce cas, le 2e argument est retourné. Vous noterez qu'il s'agit aussi d'une liste afin de rester compatible avec le <code>[0]</code> qui termine l'instruction.</p>
+    
+    <p>Ensuite, la requête nommée &quot;<code>blog</code>&quot; est ajoutée à la liste des requêtes à exécuter. Attention, il est très important que les champs aient un nom. Dans l'exemple ci-dessus, le résultat de la selection de <code>count(commentaire.id)</code> sera nommé <code>nbcommentaires</code>. Veillez aussi à ne pas utilise de caractère non conforme avec le XML, vous comprendez pourquoi très bientôt.</p>
+		
+		<p>Dans le cas où, dans les champs de la base de donnée, se trouvent les caractères comme &quot;&lt;&quot;, &quot;&gt;&quot; ou &quot;&amp;&quot;, ils seront automatiquement échappés sous forme d'entités XML.</p>
+
+		
+		<p>Le document XML avant transformation sera de la forme suivante :</p>
+		
+		<pre><![CDATA[<?xml version="1.0" encoding="ISO-8859-1"?>
+<page>
+  <fichiers/>
+  <requetes module="MySQLdb">
+    <resultat nom="blog">
+      <sql>SELECT blog.id, blog.titre, blog.categorie, blog.theme, blog.date, blog.corps, count(commentaires.id) nbcommentaires FROM bouil_blog as blog LEFT JOIN bouil_commentaires as commentaires ON blog.id = commentaires.id_blog WHERE categorie LIKE '%' AND theme LIKE '%' GROUP BY blog.id ORDER BY date DESC;</sql>
+      <enregistrement>
+        <id type="long">2</id>
+        <titre type="str">Quelques raccourcis</titre>
+        <categorie type="str">Logiciels libres</categorie>
+        <theme type="str">Emacs</theme>
+        <date type="datetime"><datetime annee="2004" mois="03" jour="31" heure="19" minute="43" seconde="49"/></date>
+        <corps type="str">
+          &lt;body xmlns="http://www.w3.org/1999/xhtml"&gt;
+            &lt;p&gt;Quelques raccourcis sympatiques, que j'oublie sans arrêt :&lt;/p&gt;
+            &lt;dl&gt;
+              &lt;dt&gt;
+                &lt;tt&gt;C-M-\&lt;/tt&gt;
+              &lt;/dt&gt;
+              &lt;dd&gt;
+                Intente la région selectionnée du buffer courant.
+              &lt;/dd&gt;
+              &lt;dt&gt;
+                &lt;tt&gt;M-/&lt;/tt&gt;
+              &lt;/dt&gt;
+              &lt;dd&gt;
+                Complète le mot courant à partir des mots déjà écrits dans les buffers ouverts.
+              &lt;/dd&gt;
+            &lt;/dl&gt;
+          &lt;/body&gt;
+        </corps>
+        <nbcommentaires type="int">2</nbcommentaires>
+      </enregistrement>
+      <enregistrement>
+        <id type="long">1</id>
+        <titre type="str">Détacher un processus d'un terminal</titre>
+        <categorie type="str">Logiciels libres</categorie>
+        <theme type="str">Shell</theme>
+        <date type="datetime"><datetime annee="2004" mois="03" jour="31" heure="19" minute="42" seconde="50"/></date>
+        <corps type="str">
+          &lt;body xmlns="http://www.w3.org/1999/xhtml"&gt;
+            &lt;p&gt;Pour détacher un processus d'un terminal, c'est à dire que la commande ne se termine pas lorsque le terminal est fermé :&lt;/p&gt;
+            &lt;p&gt;
+              &lt;tt&gt;
+                $ commande &amp; &lt;br/&gt;
+                $ disown
+              &lt;/tt&gt;
+            &lt;/p&gt;
+          &lt;/body&gt;
+        </corps>
+        <nbcommentaires type="int">0</nbcommentaires>
+      </enregistrement>
+    </resultat>
+  </requetes>
+</page>]]></pre>
+
+    <p>Ici nous n'avons pas spécifié de fichier (on aurait pu), donc l'élément <code>fichiers</code> est vide. Ensuite il vient l'élément <code>requetes</code> et son paramètre module indiquant le module python utilisé (logiquement celui que vous avez défini dans votre configuration de Falstelo). <code>requetes</code> contient un élement <code>resultat</code> par requête, dont le champ nom a la valeur de la clé que vous avez donné à votre requête en la définissant dans <code>self.requetesSQL</code>. La requête est ensuite rappellée sous sa forme SQL, puis la liste les enregistrements retournés par la requête. Des éléments de l'enregistrement est le nom des champs de la table, vous comprenez maintenant la nécessité d'avoir des noms de champ compatibles avec la syntaxe XML.</p>
+    
+    <p>Il vous suffit par la suite de créer votre feuille de style comme vous le souhaitez afin de générer la sortie désirée.</p>
+
+	<p>Pour vous aider dans le débugage de vos documents XML ou dans la rédaction de vos feuilles de style, nous avons mis en place un système de persistance du dernier document XML qui a été rendu, juste avant d'être envoyé à XSLT, ce qui est assez pratique. Vous pouvez y accéder en affichant le fichier <code>/tmp/flstXML.xml</code>.</p>
+    
+    <h1>Utilsation avancée : personnalisation</h1>
+    
+	<h2>Les sessions</h2>
+
+    <p>Falstelo intégre le système de session automatiquement. Il devient alors simplissime de gérer des sessions dans vos pages dynamiques. De la même manière dont vous accédez à <code>self.variables</code> pour récupérer les variables HTTP, vous disposez d'un autre dictionnaire, <code>self.session</code> où vous pouvez y mettre ce que bon vous semble. La persistance des données est gérée automatiquement par mod_python. Vous pouvez vous référer à la <a href="http://www.modpython.org/live/current/doc-html/pyapi-sess.html">documentation de mod_python</a> si vous souhaitez personnaliser le comportement de votre session.</p>
+
+	<p>Comme vous vous en êtes rendu compte, la plupart des pages dynamiques Python sont en fait très concises et ne sont généralement que l'affaire de 3 ou 4 lignes. Cela fait donc beaucoup de fichiers pour pas grand chose... Pour palier à ce gaspillage de place, nous avons mis en place un système de regroupement en un seul fichier. Ainsi, vous pouvez alors définir toute vos classes <code>Tnomdepage</code> dans le script <code>nomderepertoire.py</code>. Pour le cas particulier de la racine du site, il faut définir explicitement dans <code>falstelo.conf</code> le nom du script par défaut (paramètre <code>nomBaseScript</code>). Bien-sûr, la classe Tnomdurep du fichier nomdurep.py permet d'accéder à la page nomdurep/nomdurep.html.</p>
+
+	<p>[TODO] Pour le moment, il n'y a pas encore la possibilité d'ouvrir des URLs qui se terminent par un nom de répertoire (par exemple: http://www.server.com/rep/). En effet, nous utilisons actuellement un handler mod_python uniquement pour les URLs se terminant par .html. Mais nous travaillons sur la fonctionnalité d'ouvrir une page définie dans le fichier de conf (exemple «index.html») ou bien de définir une classe T définie dans le script portant le nom du répertoire. Affaire à suivre donc.</p>
+
+	<p>Il peut parfois être utile d'ajouter, pour toutes vos pages, vous ayez un traitement à réaliser (gestion de droits utilisateurs par exemple), ou des données extraites de la base de donnée à chaque fois. Afin d'éviter d'écrire des routines spéciales pour chacune des pages, vous avez la possibilité de redéfinir votre propre classe générique, à utiliser à la place de Ttransformation (que cela soit pour vos pages statiques, comme vos pages dynamiques). il vous suffit pour cela de créer la classe Tnomdureptransformation dans le fichier nomdurep.py se trouvant le répertoire nomdurep/ (voir le paragraphe précédent pour la racine du site) Cette classe hérite bien-sûr de Ttranformation et elle sera appelée pour toute les pages statiques du répertoire, nous pouvez faire de l'héritage en cascade en définissant d'autres classe dans des sousrepertoire, héritant d'une autre classe T*transformation.</p>
+	<p> Mieux : si vous ne définissez pas de classe T*transformation dans votre nomrep.py, le moteur ira chercher dans le répertoire parent (avant de prendre, par défaut, Ttransformation.py du répertoire lib/). Si vous ne souhaitez pas ce système d'héritage, vous pouvez alors définir une classe Tsousreptransformation qui hérite directement de Ttransformation ; de cette manière le moteur d'ira pas voir dans le répertoire parent (utile pour un répertoire pub/). Avec ce mécanisme (entièrement facultatif d'ailleurs), vous pouvez totalement personnaliser le comportement de vos pages statiques et dynamiques. Pour les pages dynamiques dont vous voudriez utiliser la classe Tnomreptransformation, il suffit faire hériter la classe Tnomdepage de votre classe T*transformation, de la même manière dont vous le faite pour Ttransformation (en faisant bien attention à l'import, souvenez vous que l'import se fait en fonction de la racine du site).</p>
+	<p>Attention, n'oubliez pas que pour pouvoir importer un module à partir d'un réperoire, il faut que ce répertoire contienne un fichier <code>__init__.py</code>. Un simple <code>touch nomdurep/__ini__.py</code> devrait suffir. Cela est indispensable pour importer vos classe de transformation générique dans vos scripts de pages dynamiques.</p>
+
+	<p>Voici un exemple d'un tel fichier, n'hésitez pas à lire <code>lib/transformation.py</code> qui est commenté et assez claire pour savoir quelles sont les méthodes à surcharger :</p>
+    
+    <pre><![CDATA[from lib.falstelo import Ttransformation
+
+class Tmembrestransformation(Ttransformation):
+
+        # On n'autorise que les utilisateurs connectés 
+		# ayant le droit d'admin à visualiser les pages
+        def acceder(self):
+                return self.session.get("droit", "") == "admin"
+]]></pre>
+
+    <p>Ici, nous avons surchargé une fonction qui vérifie si la page statique ou la page dynamique héritant de Tmembrestransformation peut être afficher. Par défaut dans Ttransformation, cette fonction renvoie toujours vrai. Pour cette partie du site nous désirons restreindre la visibilité des pages aux utilisateurs qui ont une variable "droit" ayant la valeur "admin" dans leur session.</p>
+
+	<p>Il faut savoir que vous pouvez également accéder à votre session via vos feuilles de style. En effet, l'attribut <code>self.session</code> est sérialisé en XML. Chaque clé du dictionnaire est une balise du même nom et la valeur est le contenu de la balise.</p>
+
+    <p>Par la suite, tout document XML statique utilisera cette classe. Vous pouvez également faire hériter vos classes Python personnelles de cette classe, ou d'une autre classe si vous souahitez avoir plusieurs comportements modèles.</p>
+
+    <h1>Limitations - Bugs</h1>
+    
+    <p>Falstelo est un projet personnel, il n'est donc sans doute pas exempt de défauts, car il a pour objectif premier de répondre à mes besoins. J'ai pu noter quelques problèmes :</p>
+    
+    <p>Le code source de Falstelo n'est pas long et relativement simple. Il est commenté en français et devrait être facilement modifiable. Cependant, la principale difficulté est d'arriver à comprendre le cheminement dans toutes les fonctions lors d'un appel à une page !</p>
+</body></html>
