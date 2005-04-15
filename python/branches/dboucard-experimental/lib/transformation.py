@@ -5,30 +5,43 @@ Auteurs :
   - Nicolas Bouillon
   - Damien Boucard
 Python-Falstelo est fourni sans aucune garantie.
-Pour plus de détails, voyez le fichier LICENCE.txt.
-Ce programme est libre et vous êtes encouragé à le redistribuer sous les conditions de la CECILL.
+Pour plus de details, voyez le fichier LICENCE.txt.
+Ce programme est libre et vous êtes encourage à le redistribuer sous les conditions de la CECILL.
 """
 
 from mod_python import apache, util, Session
 import os, sre, string
 import libxml2
-#import traceback
+#~ import traceback
 
 class Ttransformation:
+	"""
+	Classe generique par defaut de transformation Falstelo.
+	Cette classe doit etre un ascendant de toute classe de page dynamique
+	ou de transformation.
+	"""
 	def __init__(self, req, config, redirect=None):
+		# contient la requete fournie par apache
 		self.requete = req
+		# contient les parametres issus du fichier de conf
 		self.conf = config
+		# chargement du typeMime par defaut
 		if self.conf.has_option("Prefs","typeMime"):
 			self.typeMime = self.conf.get("Prefs","typeMime")
 		else:
 			self.typeMime = "text/plain"
 
-		#on extrait du fichier demandÃ© le repertoire dans lequel on travaille (le lien vers la feuille de style XSLT sera en fonction de ce repertoire
+		# on extrait du fichier demande le repertoire dans lequel on
+		# travaille (le lien vers la feuille de style XSLT sera en
+		# fonction de ce repertoire
 		self.repertoireTravail = sre.match("(/.*/)", req.filename).group(0)
 		self.session = {}
 		self.variables = {}
+
+		# chemin absolu de la racine du site
 		self.base = self.conf.get("Chemins", "cheminBase")
-		#chemin_relatif est le chemin vers la racine du site
+		# chemin_relatif est le chemin vers la racine du site
+		# a partir du repertoire du fichier demande
 		self.cheminRelatif = "./" + ("../" * (self.repertoireTravail.count("/") - self.base.count("/") - 1))
 
 		if redirect==None:

@@ -112,6 +112,9 @@ def error(req,message):
 
 #=- Initialisation du module -=#
 # Charge le fichier de configuration "falstelo.conf"
+# [TODO] gerer la possibilite d'avoir des fichiers de conf propre a un site,
+# dans le cas ou on veuille utiliser le meme moteur pour plusieurs site ou
+# d'une distribution en paquetage gnu/linux
 global conf
 conf = ConfigParser.ConfigParser()
 fichConf = __file__[:-2] + "conf"
