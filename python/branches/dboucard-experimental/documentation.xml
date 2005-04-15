@@ -275,6 +275,20 @@ class Tmembrestransformation(Ttransformation):
 
     <p>Par la suite, tout document XML statique utilisera cette classe. Vous pouvez également faire hériter vos classes Python personnelles de cette classe, ou d'une autre classe si vous souahitez avoir plusieurs comportements modèles.</p>
 
+	<h1>Récapitulons</h1>
+
+	<p>Afin de revoir les différentes manières d'appeler une page (statique comme dynamique), voici un récapitulatif qui explique le processus de recherche de scripts pour charger la page rep/sousrep/page.html</p>
+
+	<ul>
+	<li>tout d'abord, on tente de charger rep/sousrep/page.py et d'instancier une classe Tpage ;</li>
+	<li>si le script ou la classe n'existe pas, on tente de charger rep/sousrep/sousrep.py et d'intancier une classe Tpage ;</li>
+	<li>si la classe n'existe pas, on tente alors de charger rep/sousrep/sousrep.py (le même script) et d'instancier une classe Tsousreptransformation ;</li>
+	<li>si le script ou la classe n'existe pas, on tente de charger rep/rep.py et d'instancier une classe Treptransformation ;</li>
+	<li>si le script ou la classe n'existe pas, on fait de même récussivement pour toute l'arborescence du site jusqu'à sa racine si besoin ;</li>
+	<li>si on arrive jusqu'à la racine, on tente alors de charger &lt;nomBaseScript&gt;.py dans la racine du script, dont le paramètre nomBaseScript est défini dans falstelo.conf. On tente aussi d'instancier une classe T&lt;nomBaseScript&gt;transformation ; </li>
+	<li>enfin, si toute ses tentatives se sont révélées infructueuses, on charge alors lib/transformation.py et on instancie Ttransformation, lequel se chargera de manière classique du chargement respectif de rep/sousrep/page.html, rep/sousrep/page.xml ou de la page d'erreur 404.</li>
+	</ul>
+
     <h1>Limitations - Bugs</h1>
     
     <p>Falstelo est un projet personnel, il n'est donc sans doute pas exempt de défauts, car il a pour objectif premier de répondre à mes besoins. J'ai pu noter quelques problèmes :</p>
