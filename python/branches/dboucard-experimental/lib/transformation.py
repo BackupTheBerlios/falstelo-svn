@@ -28,6 +28,8 @@ class Ttransformation:
 		self.session = {}
 		self.variables = {}
 		self.base = self.conf.get("Chemins", "cheminBase")
+		#chemin_relatif est le chemin vers la racine du site
+		self.cheminRelatif = "./" + ("../" * (self.repertoireTravail.count("/") - self.base.count("/") - 1))
 
 		if redirect==None:
 			#le fichier demandé est forcement un .html
@@ -52,7 +54,7 @@ class Ttransformation:
 		self.requetesSQL = {}
 		self.resultatsSQL = {}
 		self.fichierXSLT = None
-		self.parametresXSLT = {}
+		self.parametresXSLT = {"chemin_relatif": "'%s'" % (self.cheminRelatif)}
 		self._resultat = []
 		self.bdd = None
 		self.connexion = None
@@ -135,7 +137,6 @@ class Ttransformation:
 				self.fichierXSLT = self.repertoireTravail + fichierXSLT
 				#et effectuer la transformation, comme si ton avait des fichiers multiples et des requetes
 				self.ecrire(self.effectuerTransformation())
-				self.typeMime = ""
 				self.codeRetour = apache.OK
 				return
 					
