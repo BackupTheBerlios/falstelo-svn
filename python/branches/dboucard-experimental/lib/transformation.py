@@ -1,4 +1,13 @@
 # -*- coding: UTF-8 -*-
+"""
+Python-Falstelo -- Un moteur XML/XSLT en mod_pyhton pour Apache
+Auteurs :
+  - Nicolas Bouillon
+  - Damien Boucard
+Python-Falstelo est fourni sans aucune garantie.
+Pour plus de détails, voyez le fichier LICENCE.txt.
+Ce programme est libre et vous êtes encouragé à le redistribuer sous les conditions de la CECILL.
+"""
 
 from mod_python import apache, util, Session
 import os, sre, string
