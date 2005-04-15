@@ -256,7 +256,7 @@ class Ttransformation:
 		result.freeDoc()
 		return stringval
 		
-	def agregerSession(self, racine):
+	def agregerSession(self, racine, domDocument):
 		"""
 		Integre le dictionnaire de session au document DOM.
 		A surcharger pour en modifier le comportement.
@@ -268,7 +268,7 @@ class Ttransformation:
 		for var in self.session:
 			racineSession.newChild(None, var, str(self.session[var]))
 
-	def agregerFichiersXML(self, racine):
+	def agregerFichiersXML(self, racine, domDocument):
 		"""
 		Integre les fichiers XML statiques au document DOM.
 		Non necessaire a surcharger, sauf cas particuliers.
@@ -279,7 +279,7 @@ class Ttransformation:
 			racineFichier = domFichier.getRootElement()
 			racineFichiers.addChild(racineFichier.docCopyNode(domDocument, True))
 
-	def agregerResultatsSQL(self, racine):
+	def agregerResultatsSQL(self, racine, domDocument):
 		"""
 		Integre le resultats des requetes SQL au document DOM.
 		A surcharger pour en modifier le comportement.
@@ -319,11 +319,11 @@ class Ttransformation:
 		racine = domDocument.newChild(None, self.racineXML, None);
 		
 		if len(self.session) > 0:
-			self.agregerSession(racine)
+			self.agregerSession(racine, domDocument)
 		if len(self.fichiersXML) > 0:
-			self.agregerFichiersXML(racine)
+			self.agregerFichiersXML(racine, domDocument)
 		if len(self.resultatsSQL) > 0:
-			self.agregerResultatsSQL(racine)
+			self.agregerResultatsSQL(racine, domDocument)
 		if len(self.noeudsXML) > 0:
 			# [TODO]
 			pass
