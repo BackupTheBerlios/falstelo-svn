@@ -50,15 +50,15 @@ class Ttransformation:
 			self.fichierDemande = self.requete.filename[0:len(self.requete.filename)-5]
 			# on charge la session
 			self.session = Session.Session(req)
-	                self.session.load()
+			self.session.load()
 
 			# on charge les variables de requete HTTP
 			# post est prioritaire par rapport a get
-        	        get_args = ""
-                	if req.args != None:
-                        	get_args = req.args
+			get_args = ""
+			if req.args != None:
+				get_args = req.args
 			post_args = req.read()
-                	self.variables = util.parse_qs(get_args)
+			self.variables = util.parse_qs(get_args)
 			self.variables.update(util.parse_qs(post_args))
 		else:
 			# une redirection a ete demandee par le handler
@@ -243,18 +243,22 @@ class Ttransformation:
 		Envoie le document XML a la moulinette XSLT. Normalement cette
 		methode n'a pas a etre surchargee.
 		"""
+		apache.log_error("avant agreg")
 		doc = self.agregation()
-		#~ libxml2.debugMemory(1)
-		styleDoc = libxml2.parseFile(self.fichierXSLT)
-		style = libxslt.parseStylesheetDoc(styleDoc)
-		result = style.applyStylesheet(doc, self.parametresXSLT)
-		stringval = style.saveResultToString(result)
-		# Mode debug pour afficher ce que retourne XSLT :
-		#~ style.saveResultToFilename("/tmp/foo", result, 0)
-		style.freeStylesheet()
-		doc.freeDoc()
-		result.freeDoc()
-		return stringval
+		if self.fichierXSLT !=None:
+			#~ libxml2.debugMemory(1)
+			styleDoc = libxml2.parseFile(self.fichierXSLT)
+			style = libxslt.parseStylesheetDoc(styleDoc)
+			result = style.applyStylesheet(doc, self.parametresXSLT)
+			stringval = style.saveResultToString(result)
+			# Mode debug pour afficher ce que retourne XSLT :
+			#~ style.saveResultToFilename("/tmp/foo", result, 0)
+			style.freeStylesheet()
+			doc.freeDoc()
+			result.freeDoc()
+			return stringval
+		else:
+			return str(doc)
 		
 	def agregerSession(self, racine, domDocument):
 		"""
@@ -275,6 +279,7 @@ class Ttransformation:
 		"""
 		racineFichiers = racine.newChild(None, u"fichiers", None)
 		for fichier in self.fichiersXML:
+			apache.log_error("parsing " + fichier)
 			domFichier = libxml2.parseFile(fichier)
 			racineFichier = domFichier.getRootElement()
 			racineFichiers.addChild(racineFichier.docCopyNode(domDocument, True))
@@ -390,5 +395,3 @@ class Ttransformation:
 		if str(self.session)!=str({}):
 			self.session.save()
 		util.redirect(self.requete, location)
-	
-
